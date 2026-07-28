@@ -8,14 +8,20 @@ export interface Experience {
   highlights: string[];
 }
 
+// Shape emitted by scripts/fetch-projects.mjs → data/projects.json
 export interface Project {
+  name: string;
   title: string;
   description: string;
   tech: string[];
-  metrics: string[];
-  link?: string;
-  private?: boolean;
-  snapshots?: string[];
+  language: string | null;
+  stars: number;
+  updatedAt: string;
+  githubUrl: string;
+  homepageUrl: string | null;
+  topics: string[];
+  private: boolean;
+  category: 'ai' | 'systems' | 'apps';
 }
 
 export interface SkillCategory {

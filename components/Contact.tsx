@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FadeIn } from './ui/FadeIn';
-import { Send, CheckCircle, Mail, MapPin } from 'lucide-react';
+import { SectionHeading } from './ui/SectionHeading';
+import { Send, CheckCircle, Mail, MapPin, Github } from 'lucide-react';
 import { HERO_DATA } from '../constants';
 
 export const Contact: React.FC = () => {
@@ -21,14 +22,14 @@ export const Contact: React.FC = () => {
        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
       <div className="relative grid lg:grid-cols-2 gap-16">
-        <FadeIn>
-          <div>
-            <h2 className="text-4xl font-bold text-white mb-6">Let's build something scalable.</h2>
-            <p className="text-zinc-400 text-lg mb-8 max-w-md">
-              Whether you need to modernize your stack, integrate AI, or scale your team—I'm ready to help.
-            </p>
-            
-            <div className="space-y-6">
+        <div>
+          <SectionHeading
+            eyebrow="contact"
+            title="Let's build something scalable."
+            subtitle="Whether you need to modernize your stack, integrate AI, or scale your team—I'm ready to help."
+          />
+          <FadeIn delay={0.1}>
+            <div className="mt-10 space-y-6">
               <div className="group flex items-center gap-4 text-zinc-300 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-zinc-900 transition-all duration-300 shadow-[0_0_0_rgba(251,191,36,0)] group-hover:shadow-[0_0_15px_rgba(251,191,36,0.4)]">
                   <Mail size={18} />
@@ -53,9 +54,26 @@ export const Contact: React.FC = () => {
                   <div className="group-hover:text-white transition-colors">{HERO_DATA.location}</div>
                 </div>
               </div>
+
+              <div className="group flex items-center gap-4 text-zinc-300">
+                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-zinc-900 transition-all duration-300 shadow-[0_0_0_rgba(251,191,36,0)] group-hover:shadow-[0_0_15px_rgba(251,191,36,0.4)]">
+                  <Github size={18} />
+                </div>
+                <div>
+                  <div className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors">GitHub</div>
+                  <a
+                    href={HERO_DATA.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-accent transition-colors duration-300 border-b border-transparent hover:border-accent/50 pb-0.5"
+                  >
+                    @vedantnimbarte
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        </FadeIn>
+          </FadeIn>
+        </div>
 
         <FadeIn delay={0.2}>
           <div className="bg-surface border border-zinc-800 p-8 rounded-2xl relative shadow-xl hover:shadow-2xl hover:border-zinc-700/50 transition-all duration-500">

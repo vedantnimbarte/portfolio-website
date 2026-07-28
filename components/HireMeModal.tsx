@@ -123,7 +123,7 @@ export const HireMeModal: React.FC<HireMeModalProps> = ({ isOpen, onClose }) => 
                     </button>
                     
                     <p className="text-center text-xs text-zinc-600 mt-4">
-                      Prefer email? <a href="mailto:contact@vedantnimbarte.dev" className="text-zinc-400 hover:text-accent underline transition-colors hover:drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]">contact@vedantnimbarte.dev</a>
+                      Prefer email? <a href="mailto:vedantnimbarteofficial@gmail.com" className="text-zinc-400 hover:text-accent underline transition-colors hover:drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]">vedantnimbarteofficial@gmail.com</a>
                     </p>
                   </form>
                 )}

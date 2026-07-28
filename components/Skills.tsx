@@ -1,6 +1,7 @@
 import React from 'react';
 import { SKILLS_DATA } from '../constants';
 import { FadeIn } from './ui/FadeIn';
+import { SectionHeading } from './ui/SectionHeading';
 import { motion } from 'framer-motion';
 import { 
   Terminal, 
@@ -30,15 +31,14 @@ export const Skills: React.FC = () => {
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
       <div className="relative">
-        <FadeIn>
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Technical Arsenal</h2>
-            <p className="text-zinc-400 max-w-2xl text-lg">
-                My production-proven toolkit for building scalable, high-performance applications.
-            </p>
-          </div>
-        </FadeIn>
-        
+        <SectionHeading
+          className="mb-16"
+          eyebrow="stack"
+          title="Technical Arsenal"
+          subtitle="My production-proven toolkit for building scalable, high-performance applications — from the browser down to the metal."
+          meta={`${SKILLS_DATA.length} domains`}
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SKILLS_DATA.map((category, idx) => {
             const Icon = getIcon(category.title);
@@ -51,14 +51,17 @@ export const Skills: React.FC = () => {
                   {/* Hover Glow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
                   
+                  {/* corner tick */}
+                  <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-zinc-700 transition-colors group-hover:border-accent/50" />
                   <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-10 h-10 rounded-lg bg-zinc-800/80 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-accent group-hover:border-accent/30 transition-colors">
+                    <div className="mb-6 flex items-center gap-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800/80 text-zinc-300 transition-colors group-hover:border-accent/30 group-hover:text-accent">
                             <Icon size={20} />
                         </div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-zinc-100 transition-colors">
+                        <h3 className="flex-1 text-lg font-semibold text-white transition-colors group-hover:text-zinc-100">
                         {category.title}
                         </h3>
+                        <span className="font-mono text-xs text-zinc-600">{String(category.skills.length).padStart(2, '0')}</span>
                     </div>
 
                     <div className="flex flex-wrap gap-2">

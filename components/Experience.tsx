@@ -1,6 +1,7 @@
 import React from 'react';
 import { EXPERIENCE_DATA } from '../constants';
 import { FadeIn } from './ui/FadeIn';
+import { SectionHeading } from './ui/SectionHeading';
 import { Briefcase, Calendar, MapPin, TrendingUp, Sparkles } from 'lucide-react';
 
 // Helper to highlight numbers/metrics in text
@@ -26,14 +27,13 @@ const formatHighlight = (text: string) => {
 export const Experience: React.FC = () => {
   return (
     <section id="experience" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 snap-start">
-      <div className="mb-20">
-        <FadeIn>
-            <h2 className="text-3xl font-bold text-white mb-4">Professional Experience</h2>
-            <p className="text-zinc-400 max-w-xl">
-                A timeline of my impact on engineering teams and production systems.
-            </p>
-        </FadeIn>
-      </div>
+      <SectionHeading
+        className="mb-20"
+        eyebrow="experience"
+        title="Professional Experience"
+        subtitle="A timeline of my impact on engineering teams and production systems."
+        meta="2021 — present"
+      />
 
       <div className="relative">
         {/* The Timeline Rail */}

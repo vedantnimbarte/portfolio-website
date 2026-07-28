@@ -1,0 +1,171 @@
+[
+  {
+    "name": "Arc",
+    "title": "Arc",
+    "description": "ARC is a desktop terminal and AI agent runtime built with Tauri (Rust) and React (TypeScript). It combines a real PTY-backed terminal, an embedded code editor, multi-agent orchestration, and local + cloud AI providers behind one unified interface.",
+    "tech": [
+      "TypeScript",
+      "Rust"
+    ],
+    "language": "TypeScript",
+    "stars": 3,
+    "updatedAt": "2026-07-17T20:05:26Z",
+    "githubUrl": "https://github.com/vedantnimbarte/Arc",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "apps"
+  },
+  {
+    "name": "dlm",
+    "title": "DLM",
+    "description": "A high-performance local LLM inference engine written in Rust. Dynamically streams transformer layers to break VRAM limitations and run massive models on consumer hardware.",
+    "tech": [
+      "Rust",
+      "Cuda"
+    ],
+    "language": "Rust",
+    "stars": 2,
+    "updatedAt": "2026-07-18T11:17:59Z",
+    "githubUrl": "https://github.com/vedantnimbarte/dlm",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "ai"
+  },
+  {
+    "name": "Wingman",
+    "title": "Wingman",
+    "description": "Multi-provider terminal coding agent in Rust — bring your own model   (Anthropic, OpenAI, Gemini, Ollama, OpenRouter)",
+    "tech": [
+      "Rust",
+      "TypeScript"
+    ],
+    "language": "Rust",
+    "stars": 2,
+    "updatedAt": "2026-07-20T20:35:02Z",
+    "githubUrl": "https://github.com/vedantnimbarte/Wingman",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "ai"
+  },
+  {
+    "name": "kortex-memory",
+    "title": "Kortex Memory",
+    "description": "Production-grade, multi-tenant memory layer for LLMs and AI coding agents (Claude Code, Codex, OpenCode). Plug it in via MCP and your agents get a shared, durable, scoped, access-controlled memory that survives across sessions and tools.",
+    "tech": [
+      "Python",
+      "TypeScript"
+    ],
+    "language": "Python",
+    "stars": 2,
+    "updatedAt": "2026-07-17T18:03:59Z",
+    "githubUrl": "https://github.com/vedantnimbarte/kortex-memory",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "ai"
+  },
+  {
+    "name": "Aegis",
+    "title": "Aegis",
+    "description": "Aegis is an automated, continuous penetration testing SaaS. It utilizes an autonomous multi-agent AI framework to dynamically execute code in isolated sandboxes. Aegis detects, exploits, and validates real security vulnerabilities, providing developers with zero-false-positive reports and actionable AI-generated remediation",
+    "tech": [
+      "Python",
+      "TypeScript"
+    ],
+    "language": "Python",
+    "stars": 2,
+    "updatedAt": "2026-07-09T16:21:35Z",
+    "githubUrl": "https://github.com/vedantnimbarte/Aegis",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "ai"
+  },
+  {
+    "name": "zero",
+    "title": "Zero",
+    "description": "A privacy-first, AI-native web browser with its own rendering engine, built from scratch in Rust",
+    "tech": [
+      "Rust",
+      "Python"
+    ],
+    "language": "Rust",
+    "stars": 1,
+    "updatedAt": "2026-07-22T15:11:07Z",
+    "githubUrl": "https://github.com/vedantnimbarte/zero",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "systems"
+  },
+  {
+    "name": "clifi",
+    "title": "CLIFi",
+    "description": "A terminal-native personal finance tracker written in Rust. Log expenses headlessly or via an   interactive wizard, import bank CSVs with rule-based auto-categorization, and browse a ratatui dashboard with vim-style navigation, a searchable/filterable ledger, and category spending charts. Local-first data stays in a JSON file, no cloud, no accounts",
+    "tech": [
+      "Rust"
+    ],
+    "language": "Rust",
+    "stars": 2,
+    "updatedAt": "2026-07-11T13:10:02Z",
+    "githubUrl": "https://github.com/vedantnimbarte/clifi",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "systems"
+  },
+  {
+    "name": "Echo",
+    "title": "Echo",
+    "description": "Echo is a privacy-first, cross-platform voice keyboard: press a hotkey, speak, and Echo transcribes your speech and types it into whatever app is focused. Transcription runs locally (Whisper) or via cloud providers (OpenAI, Groq, Deepgram) — your choice.",
+    "tech": [
+      "TypeScript",
+      "Rust"
+    ],
+    "language": "TypeScript",
+    "stars": 2,
+    "updatedAt": "2026-07-11T12:30:05Z",
+    "githubUrl": "https://github.com/vedantnimbarte/Echo",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "apps"
+  },
+  {
+    "name": "ROCm-Studio",
+    "title": "ROCm Studio",
+    "description": "Mission control for the ROCm ecosystem — App for AMD GPU developers",
+    "tech": [
+      "TypeScript",
+      "Rust"
+    ],
+    "language": "TypeScript",
+    "stars": 1,
+    "updatedAt": "2026-07-11T12:32:11Z",
+    "githubUrl": "https://github.com/vedantnimbarte/ROCm-Studio",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "apps"
+  },
+  {
+    "name": "Arc-Data-Factory",
+    "title": "Arc Data Factory",
+    "description": "Production-grade platform for collecting, cleaning, deduplicating, classifying, scoring, tokenizing, and sharding AI training datasets for ARC models (300M → 1B → 10B+ roadmap)",
+    "tech": [
+      "Python",
+      "TypeScript"
+    ],
+    "language": "Python",
+    "stars": 2,
+    "updatedAt": "2026-07-09T16:21:40Z",
+    "githubUrl": "https://github.com/vedantnimbarte/Arc-Data-Factory",
+    "homepageUrl": null,
+    "topics": [],
+    "private": false,
+    "category": "ai"
+  }
+]

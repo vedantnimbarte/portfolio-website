@@ -1,21 +1,22 @@
-import { Experience, Project, SkillCategory, Stat, FeatureBlock } from './types';
-import { Cpu, Cloud, GitBranch, Terminal, Database, Globe } from 'lucide-react';
+import { Experience, SkillCategory, Stat, FeatureBlock } from './types';
+import { Cpu, Cloud, GitBranch } from 'lucide-react';
 
 export const NAV_ITEMS = [
   { label: 'About', href: '#about' },
+  { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
   { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'AI & Cloud', href: '#ai-cloud' },
   { label: 'Contact', href: '#contact' },
 ];
 
 export const HERO_DATA = {
   name: "Vedant Nimbarte",
   title: "Senior Full Stack Developer",
-  subtitle: "Architecting scalable cloud systems, integrating AI solutions, and leading high-performance engineering teams.",
+  roles: ["Full Stack Developer", "AI & Systems Engineer", "Cloud Architect"],
+  subtitle: "Architecting scalable cloud systems, building AI-native tools, and shipping high-performance software from the browser to the metal.",
   location: "Surat, Gujarat, India",
-  email: "contact@vedantnimbarte.dev"
+  email: "vedantnimbarteofficial@gmail.com",
+  github: "https://github.com/vedantnimbarte",
 };
 
 export const STATS: Stat[] = [
@@ -76,63 +77,29 @@ export const EXPERIENCE_DATA: Experience[] = [
 ];
 
 export const SKILLS_DATA: SkillCategory[] = [
-  { title: "Languages", skills: ["TypeScript", "JavaScript", "Python", "SQL", "HTML5", "CSS3"] },
-  { title: "Frontend", skills: ["React", "Next.js", "SolidJS", "Redux", "Tailwind CSS", "Framer Motion"] },
+  { title: "Languages", skills: ["TypeScript", "JavaScript", "Rust", "Python", "SQL"] },
+  { title: "Frontend", skills: ["React", "Next.js", "SolidJS", "Tauri", "Tailwind CSS", "Three.js"] },
   { title: "Backend", skills: ["Node.js", "Express.js", "NestJS", "Microservices", "Kafka"] },
   { title: "Database", skills: ["PostgreSQL", "MongoDB", "Redis", "Prisma", "Mongoose"] },
-  { title: "Cloud & DevOps", skills: ["AWS", "GCP", "Docker", "Kubernetes", "CI/CD", "Ansible", "Terraform"] },
-  { title: "AI & Arch", skills: ["OpenAI API", "LLM Integration", "System Design", "Scalability", "Performance Tuning"] },
+  { title: "Cloud & DevOps", skills: ["AWS", "GCP", "Docker", "Kubernetes", "CI/CD", "Terraform"] },
+  { title: "AI & Systems", skills: ["LLM Integration", "Inference Engines", "MCP", "System Design", "Performance Tuning"] },
 ];
 
-export const PROJECTS_DATA: Project[] = [
-  {
-    title: "SyncSpace – All-in-One AI Workspace",
-    description: "An integrated AI workspace designed as a modern alternative to Google Workspace. Brings together Docs, Presentations, Drive, and Project Management into a single unified interface with real-time AI agents.",
-    tech: ["React JS", "Node JS", "TypeScript", "OpenAI API", "Gemini API", "Redis", "Docker", "Minio", "Vite"],
-    metrics: ["99.9% Collaboration Uptime", "30% Faster Task Completion", "AI-Generated Docs/sec"],
-    link: "https://github.com/vedantnimbarte",
-    snapshots: [
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426",
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070"
-    ]
-  },
-  {
-    title: "Arcade Studio - Product Analytics",
-    description: "End-to-end product analytics platform that helps teams track website performance and visualize user funnels. Features real-time behavior tracking and automated drop-off detection.",
-    tech: ["React JS", "Node JS", "TypeScript", "Gemini API", "Redis", "Kubernetes", "Cloudflare R2", "Vite", "FFmpeg", "Chrome API"],
-    metrics: ["1M+ Events Processed/Day", "50ms Dashboard Latency", "Real-time Funnel Tracking"],
-    link: "https://github.com/vedantnimbarte",
-    snapshots: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070",
-      "https://images.unsplash.com/photo-1504868584819-f8e90526ef21?auto=format&fit=crop&q=80&w=2076"
-    ]
-  },
-  {
-    title: "Video Processing Microservice",
-    description: "High-throughput video encoding service designed for parallel processing and scalability. Supports adaptive bitrate streaming and automatic format conversion.",
-    tech: ["Node JS", "TypeScript", "Redis", "Kubernetes", "Cloudflare R2", "FFmpeg"],
-    metrics: ["1,000+ Parallel Encodes", "60% Cost Reduction", "Zero-Latency Queueing"],
-    link: "https://github.com/vedantnimbarte",
-    snapshots: [
-      "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2059"
-    ]
-  }
-];
-
-export const AI_CLOUD_FEATURES: FeatureBlock[] = [
+// AI-native / cloud capabilities — surfaced in the About section.
+export const CAPABILITIES: FeatureBlock[] = [
   {
     title: "AI Integration",
-    description: "Embedding LLM capabilities directly into production workflows. From chatbots to intelligent data analysis, transforming raw API calls into user value.",
+    description: "Embedding LLMs and agentic workflows directly into production — from inference engines to MCP-based memory layers and multi-provider coding agents.",
     icon: Cpu
   },
   {
     title: "Cloud Architecture",
-    description: "Designing fault-tolerant systems on AWS and GCP. Utilizing serverless patterns and managed services to ensure scalability without maintenance overhead.",
+    description: "Designing fault-tolerant systems on AWS and GCP with serverless patterns and managed services that scale without maintenance overhead.",
     icon: Cloud
   },
   {
     title: "DevOps & Reliability",
-    description: "Automating the path to production with robust CI/CD pipelines (Docker/K8s). Ensuring 99.9% uptime through proactive monitoring and self-healing infra.",
+    description: "Automating the path to production with Docker/K8s CI/CD pipelines, ensuring 99.9% uptime through proactive monitoring and self-healing infra.",
     icon: GitBranch
   }
 ];
