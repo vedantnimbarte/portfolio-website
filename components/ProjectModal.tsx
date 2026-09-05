@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, Github, Star, Code2 } from 'lucide-react';
+import { ExternalLink, Github, Star, X } from 'lucide-react';
 import { Project } from '../types';
-import { getTechDetails } from './Projects';
+import { getTechDetails } from './ui/tech';
+import { relativeTime } from '../lib/format';
+import { Ticks } from './ui/Panel';
 
 interface ProjectModalProps {
   project: Project | null;
@@ -11,6 +13,29 @@ interface ProjectModalProps {
 }
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose }) => {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
+
+  // Escape to close, and put focus back where it came from. Shipping a fake OS
+  // with a modal you cannot escape would be the worst kind of irony.
+  useEffect(() => {
+    if (!isOpen) return;
+    opener.current = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      opener.current?.focus?.();
+    };
+  }, [isOpen, onClose]);
+
   if (!project) return null;
 
   return (
@@ -22,103 +47,107 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onC
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-[200] bg-void/85"
           />
 
-          <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none">
+          <div className="pointer-events-none fixed inset-0 z-[201] flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 24 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 24 }}
-              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="pointer-events-auto flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-surface shadow-[0_0_60px_rgba(0,0,0,0.6)]"
+              ref={panelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="project-modal-title"
+              tabIndex={-1}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+              className="bevel pointer-events-auto relative flex max-h-[85vh] w-full max-w-2xl flex-col border border-trace bg-hull focus:outline-none"
             >
-              {/* Header */}
-              <div className="relative shrink-0 border-b border-zinc-800 p-8">
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.15]"
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(rgba(251,191,36,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.4) 1px, transparent 1px)',
-                    backgroundSize: '28px 28px',
-                    maskImage: 'radial-gradient(ellipse 70% 100% at 0% 0%, black, transparent)',
-                    WebkitMaskImage: 'radial-gradient(ellipse 70% 100% at 0% 0%, black, transparent)',
-                  }}
-                />
-                <button
-                  onClick={onClose}
-                  className="absolute right-6 top-6 rounded-full bg-black/30 p-2 text-zinc-400 transition-all hover:rotate-90 hover:text-white"
-                >
-                  <X size={20} />
-                </button>
+              <Ticks />
 
-                <div className="relative z-10 flex flex-wrap items-center gap-2">
-                  <span className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/70 px-2.5 py-1 text-xs font-semibold text-zinc-300">
-                    <Star size={12} className="text-accent" fill="currentColor" /> {project.stars}
-                  </span>
-                  {project.language && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/70 px-2.5 py-1 text-xs font-semibold text-zinc-300">
-                      <span className="h-2 w-2 rounded-full bg-accent" /> {project.language}
-                    </span>
-                  )}
-                  {project.private && (
-                    <span className="rounded-full border border-zinc-800 bg-zinc-900/70 px-2.5 py-1 text-xs font-semibold text-zinc-500">
-                      Private
-                    </span>
-                  )}
+              <div className="shrink-0 border-b border-trace p-6">
+                <div className="mb-3 flex items-start gap-4">
+                  <h2 id="project-modal-title" className="t-module text-ink">
+                    {project.title}
+                  </h2>
+                  <span aria-hidden className="mt-3 h-px flex-1 bg-trace" />
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    aria-label="Close"
+                    className="-mr-1 -mt-1 p-1.5 text-ink-dim transition-colors hover:text-signal"
+                  >
+                    <X size={16} aria-hidden />
+                  </button>
                 </div>
-                <h3 className="relative z-10 mt-4 font-display text-3xl font-bold text-white">{project.title}</h3>
+
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <span className="t-micro flex items-center gap-1 text-record">
+                    <Star size={10} aria-hidden />
+                    {project.stars}
+                    <span className="sr-only"> stars</span>
+                  </span>
+                  <span className="t-micro text-ink-dim">{project.language ?? 'Multi'}</span>
+                  <span className="t-micro text-ink-dim">
+                    updated {relativeTime(project.updatedAt)}
+                  </span>
+                </div>
               </div>
 
-              {/* Content */}
-              <div className="custom-scrollbar overflow-y-auto p-8">
-                <p className="mb-8 text-lg leading-relaxed text-zinc-300">{project.description}</p>
+              <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto p-6">
+                <p className="t-prose mb-6 text-ink-dim">{project.description}</p>
 
-                <h4 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-500">
-                  <Code2 size={14} className="text-accent" /> Stack
-                </h4>
-                <div className="mb-8 flex flex-wrap gap-2">
+                <p className="t-label mb-2 text-ink-dim">Stack</p>
+                <ul className="mb-6 flex flex-wrap gap-1.5">
                   {project.tech.map((t) => {
                     const { icon: Icon, label } = getTechDetails(t);
                     return (
-                      <div key={t} className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-400">
-                        <Icon size={14} className="text-zinc-500" />
+                      <li
+                        key={t}
+                        className="t-micro flex items-center gap-1.5 rounded-[2px] border border-trace bg-void px-2 py-1 text-ink-dim"
+                      >
+                        <Icon size={10} aria-hidden />
                         {label}
-                      </div>
+                      </li>
                     );
                   })}
-                </div>
+                </ul>
 
                 {project.topics.length > 0 && (
-                  <div className="mb-8 flex flex-wrap gap-2">
-                    {project.topics.map((topic) => (
-                      <span key={topic} className="rounded-md bg-accent/10 px-2 py-1 font-mono text-xs text-accent/90">
-                        #{topic}
-                      </span>
-                    ))}
-                  </div>
+                  <>
+                    <p className="t-label mb-2 text-ink-dim">Topics</p>
+                    <ul className="flex flex-wrap gap-1.5">
+                      {project.topics.map((t) => (
+                        <li key={t} className="t-micro text-ink-dim">
+                          #{t}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 )}
+              </div>
 
-                <div className="flex flex-col gap-3 border-t border-zinc-800 pt-6 sm:flex-row">
+              <div className="flex shrink-0 gap-px border-t border-trace">
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="t-micro flex flex-1 items-center justify-center gap-2 bg-signal/10 py-3 text-signal transition-colors hover:bg-signal/20"
+                >
+                  <Github size={12} aria-hidden />
+                  View on GitHub
+                </a>
+                {project.homepageUrl && (
                   <a
-                    href={project.githubUrl}
+                    href={project.homepageUrl}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 font-bold text-zinc-900 shadow-[0_0_20px_rgba(251,191,36,0.2)] transition-all hover:bg-white"
+                    rel="noreferrer"
+                    className="t-micro flex flex-1 items-center justify-center gap-2 py-3 text-ink-dim transition-colors hover:text-signal"
                   >
-                    <Github size={18} /> View on GitHub
+                    <ExternalLink size={12} aria-hidden />
+                    Live demo
                   </a>
-                  {project.homepageUrl && (
-                    <a
-                      href={project.homepageUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800 px-6 py-3.5 font-bold text-white transition-all hover:border-accent/50"
-                    >
-                      Live Demo <ExternalLink size={16} />
-                    </a>
-                  )}
-                </div>
+                )}
               </div>
             </motion.div>
           </div>

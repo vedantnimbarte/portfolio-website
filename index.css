@@ -1,71 +1,190 @@
 @import "tailwindcss";
 
-/* Preserve the original theme tokens exactly (was inline in index.html) */
+/* ============================================================================
+   VN-OS design tokens
+   Grounded in instrumentation — oscilloscope traces, PCB silkscreen, mil-spec
+   faceplates — not in movie holograms. Hairlines and density over bloom.
+   ========================================================================= */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  /* Type. Two families; Archivo's width axis carries the display contrast. */
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  --color-background: #0e1015;
-  --color-surface: #181a20;
-  --color-accent: #fbbf24; /* Amber 400 */
-  --color-accent-2: #f59e0b; /* Amber 500 — deeper, for gradients */
-  --color-accent-dim: rgba(251, 191, 36, 0.1);
+  /* Chassis */
+  --color-void:    #04060a; /* deepest ground, behind the chassis */
+  --color-hull:    #0a0f16; /* panel fill */
+  --color-bezel:   #111925; /* raised chrome: rail, telemetry, status bar */
+  --color-trace:   #1b2c3a; /* hairlines, grid, inactive borders */
+
+  /* Signal. Two hues, and the second one is load-bearing:
+     cyan  = LIVE — this session, this browser, right now
+     amber = RECORD — historical, measured elsewhere (Cloudairy production)
+     Never mix them in one row. See Telemetry.tsx. */
+  --color-signal:  #35dce8; /* deliberately not cyan-400 — pulled to phosphor */
+  --color-record:  #f0a828;
+  --color-alert:   #ff5470;
+
+  /* Ink */
+  --color-ink:     #c9dce4;
+  --color-ink-dim: #6b8390;
+
+  /* The console/handheld chassis switch. Mirrored as a literal in
+     hooks/useMediaQuery.ts — keep the two in sync. */
+  --breakpoint-console: 900px;
 }
 
-/* Blueprint grid — the "engineered" surface texture, masked to fade at edges */
-@utility blueprint {
-  background-image:
-    linear-gradient(rgba(251, 191, 36, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(251, 191, 36, 0.06) 1px, transparent 1px);
-  background-size: 48px 48px;
+/* ---------------------------------------------------------------- type roles
+   Scale is a 1.25 minor third; mono sits on a 4px grid. Caps appear ONLY in
+   mono chrome, where they name a readout row and do structural work. */
+
+@utility t-nameplate {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 125, "wght" 700;
+  font-size: clamp(2.75rem, 6vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
 }
 
-@layer base {
-  body {
-    background-color: #0e1015;
-    color: #f3f4f6;
+@utility t-module {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 125, "wght" 600;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+@utility t-prose {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 100, "wght" 400;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  max-width: 68ch;
+}
+
+@utility t-readout {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@utility t-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@utility t-micro {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+}
+
+/* ----------------------------------------------------------------- geometry
+   Chamfer, don't round. A 45° cut corner reads as machined panel; a uniform
+   border-radius reads as a SaaS card. */
+
+@utility chamfer {
+  clip-path: polygon(
+    10px 0, 100% 0, 100% calc(100% - 10px),
+    calc(100% - 10px) 100%, 0 100%, 0 10px
+  );
+}
+
+@utility chamfer-sm {
+  clip-path: polygon(
+    6px 0, 100% 0, 100% calc(100% - 6px),
+    calc(100% - 6px) 100%, 0 100%, 0 6px
+  );
+}
+
+/* Depth from inset bevels, the way a real panel does it. No drop shadows. */
+@utility bevel {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* The dot-leader row: `role ········ senior full stack`. Lifted from datasheets
+   and BOMs. The leader itself is decorative — aria-hidden at the call site. */
+@utility leader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  &::after {
+    content: "";
+    flex: 1;
+    order: 1;
+    height: 0;
+    border-bottom: 1px dotted color-mix(in srgb, var(--color-ink-dim) 45%, transparent);
+    transform: translateY(-0.25em);
   }
+  & > :last-child { order: 2; }
 }
 
-/* Hide scrollbars on horizontal filter/gallery strips (referenced by components) */
+/* Faint instrument grid. Masked at the call site where needed. */
+@utility gridfield {
+  background-image:
+    linear-gradient(rgba(53, 220, 232, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(53, 220, 232, 0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
 @utility scrollbar-hide {
   scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* --------------------------------------------------------------------- base
+   The console is fixed. The page never scrolls; content scrolls inside panels.
+   100dvh (not vh) or iOS Safari's collapsing URL bar cuts off the dock. */
+@layer base {
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-variation-settings: "wdth" 100, "wght" 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-signal) 30%, transparent);
+    color: #ffffff;
+  }
+  /* Focus is never invisible — this is a keyboard-driven UI. */
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+  dialog::backdrop {
+    background: rgba(4, 6, 10, 0.82);
+    backdrop-filter: blur(2px);
   }
 }
 
-/* Custom scrollbar for dark theme (was inline in index.html) */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #0e1015;
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #444;
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 10px;
-}
+/* --------------------------------------------------------------- scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-void); }
+::-webkit-scrollbar-thumb { background: var(--color-trace); }
+::-webkit-scrollbar-thumb:hover { background: #24405a; }
 
-/* Respect reduced-motion globally for CSS-driven animation */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-trace); }
+
+/* ------------------------------------------------------------------- motion
+   Chrome animation is CSS-driven precisely so this one rule neutralizes it.
+   JS-driven motion is gated separately via useReducedMotion(). */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
