@@ -56,8 +56,6 @@ something changed.
 
 ## Before launch
 
-- Replace the placeholder origin (`https://vedantnimbarte.vercel.app/`) in
-  `index.html` - it appears in the canonical link, the OG tags and the JSON-LD.
 - Drop a `resume.pdf` into `public/` and set `CONTACT.resumeUrl` in
   `constants.ts`. Until then the resume command answers honestly instead of
   serving a dead link.
