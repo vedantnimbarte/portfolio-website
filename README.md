@@ -1,7 +1,8 @@
 # Vedant Nimbarte — portfolio
 
-A single scrolling page on a deep navy ground: hero with a three.js crystal,
-featured GitHub projects, past-role highlights, services, a three-step process,
+A single scrolling page on a deep navy ground: hero with a portrait ringed by
+GitHub achievement badges,
+featured GitHub projects, past roles, services, a three-step process,
 side projects, production numbers and a closing call to action. A floating
 chat answers questions about the work, and Cmd-K / Ctrl-K opens a palette
 that jumps to any section or project.
@@ -20,11 +21,14 @@ npm run preview
 
 ## How it is put together
 
-- `sections/` - the page, top to bottom: `Hero` (nav, hero, stack marquee),
-  `Work` (featured grid, side-project strip), `Services` (experience marquee,
+- `sections/` - the page, top to bottom: `Hero` (sticky nav, hero, stack
+  marquee), `Work` (featured grid, side projects), `Services` (role cards,
   services bento, steps), `Closing` (numbers fan, bands, contact, footer).
-- `components/ProjectCover.tsx` - generated cover art for repos, which have no
-  screenshots. Colour is fixed by project order.
+- `components/ProjectCover.tsx` - cover art for repos: a window, terminal or
+  chat mock chosen from the description. Drop a screenshot at
+  `assets/projects/<repo name>.jpg` (or png/webp) to use it instead.
+- `components/TechIcon.tsx` - brand marks from Simple Icons, with Lucide
+  fallbacks for AWS and non-brand skills.
 - `components/Assistant.tsx` - the floating chat and the command palette.
 - `lib/knowledge.ts` - the assistant's answers. A keyword index **derived** from
   `constants.ts` and `data/projects.json` rather than a second copy of the same
@@ -42,8 +46,15 @@ npm run preview
 npm run fetch:projects      # needs the gh CLI, authenticated
 ```
 
-`.github/workflows/refresh-projects.yml` runs this weekly and commits only when
-something changed.
+`data/github.json` and the badge images in `assets/github/` come from the public
+GitHub profile (achievements have no API, so the script reads the profile page):
+
+```
+npm run fetch:github
+```
+
+`.github/workflows/refresh-projects.yml` runs both weekly and commits only when
+something changed. The hero portrait is `assets/profile.jpg`.
 
 ## Before launch
 

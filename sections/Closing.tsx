@@ -1,60 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import { Award, Linkedin, Mail } from 'lucide-react';
+import { Activity, Linkedin, Mail, Sparkles, Users, Zap } from 'lucide-react';
 import { CONTACT, EXPERIENCE_DATA, HERO_DATA, STATS } from '../constants';
 import { Marquee } from '../components/ui';
 
 /* ---------------------------------------------------------------- numbers
    The reference fans out certificates. There are none to show, so the fan
-   holds production figures instead, each one verbatim from constants.ts. */
+   holds Cloudairy production figures, each from constants.ts. Years of
+   experience lives in the hero, so it isn't repeated here. */
+
+const stat = (label: string) => STATS.find((s) => s.label === label)?.value ?? '';
 
 const CARDS = [
-  ...STATS.map((s) => ({ value: s.value, label: s.label })),
-  { value: '40%', label: 'Faster API responses' },
+  { value: stat('Daily Users'), label: 'Daily users', note: 'On MERN apps I architected', icon: Users },
+  { value: stat('System Uptime'), label: 'Uptime', note: 'Across those same systems', icon: Activity },
+  { value: stat('AI Ops/Mo'), label: 'OpenAI calls a month', note: 'Powering generative features', icon: Sparkles },
+  { value: '40%', label: 'Faster API responses', note: 'From indexing and caching', icon: Zap },
 ];
 
 const FAN = [
-  { rot: -16, y: 44, bg: '#146ef5', ink: '#ffffff', sub: 'rgba(255,255,255,0.7)' },
-  { rot: -8, y: 12, bg: '#1f8a5b', ink: '#ffffff', sub: 'rgba(255,255,255,0.7)' },
-  { rot: 0, y: 0, bg: '#f3f5fa', ink: '#0d1526', sub: '#5b6780' },
-  { rot: 8, y: 12, bg: '#ffffff', ink: '#0d1526', sub: '#5b6780' },
-  { rot: 16, y: 44, bg: '#146ef5', ink: '#ffffff', sub: 'rgba(255,255,255,0.7)' },
+  { rot: -12, y: 28, bg: '#146ef5', ink: '#ffffff', sub: 'rgba(255,255,255,0.72)' },
+  { rot: -4, y: 4, bg: '#1f8a5b', ink: '#ffffff', sub: 'rgba(255,255,255,0.72)' },
+  { rot: 4, y: 4, bg: '#f3f5fa', ink: '#0d1526', sub: '#5b6780' },
+  { rot: 12, y: 28, bg: '#ffd84a', ink: '#0d1526', sub: '#5b5222' },
 ];
 
 export const Numbers: React.FC = () => (
-  <section aria-labelledby="numbers-title" className="overflow-hidden px-5 pb-10 pt-24">
+  <section aria-labelledby="numbers-title" className="overflow-hidden px-5 pb-8 pt-20">
     <h2 id="numbers-title" className="t-h2 mx-auto max-w-md text-center">
-      My Collection of Production Numbers
+      Numbers from production
     </h2>
 
-    <ul className="mx-auto mt-14 flex max-w-5xl justify-center max-md:flex-wrap max-md:gap-4 md:-space-x-6">
+    <ul className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-4 md:flex md:justify-center md:gap-0 md:-space-x-4">
       {CARDS.map((c, i) => {
-        const f = FAN[i % FAN.length];
+        const f = FAN[i];
         return (
           <li
             key={c.label}
-            className="w-[46%] shrink-0 transition-transform duration-300 hover:z-10 hover:-translate-y-4 md:w-48 md:[transform:translateY(var(--y))_rotate(var(--r))]"
+            className="transition-transform duration-300 hover:z-10 hover:-translate-y-4 md:w-52 md:shrink-0 md:[transform:translateY(var(--y))_rotate(var(--r))]"
             style={{ '--r': `${f.rot}deg`, '--y': `${f.y}px` } as React.CSSProperties}
           >
             <div
               className="flex aspect-[3/4] flex-col justify-between rounded-2xl p-5 shadow-[0_30px_50px_-20px_rgba(0,0,0,0.6)]"
               style={{ backgroundColor: f.bg, color: f.ink }}
             >
-              <span className="text-[11px] font-semibold" style={{ color: f.sub }}>
-                Production record
-              </span>
+              <c.icon size={24} aria-hidden style={{ color: f.sub }} />
               <span>
-                <span className="block text-4xl font-bold leading-none tracking-tight">{c.value}</span>
-                <span className="mt-2 block t-small font-medium">{c.label}</span>
+                <span className="block text-4xl font-bold leading-none tracking-tight sm:text-5xl">{c.value}</span>
+                <span className="mt-2 block t-body font-semibold">{c.label}</span>
+                <span className="mt-1 block text-xs" style={{ color: f.sub }}>{c.note}</span>
               </span>
-              <Award size={26} aria-hidden style={{ color: f.sub }} />
             </div>
           </li>
         );
       })}
     </ul>
 
-    <p className="mx-auto mt-16 max-w-md text-center t-small text-mute">
-      Usage and performance figures come from production systems at {EXPERIENCE_DATA[0].company}, {EXPERIENCE_DATA[0].period.replace('–', 'to')}.
+    <p className="mx-auto mt-14 max-w-md text-center t-small text-mute">
+      Measured on production systems at {EXPERIENCE_DATA[0].company}, {EXPERIENCE_DATA[0].period.replace('–', 'to')}.
     </p>
   </section>
 );
@@ -97,18 +99,18 @@ const useLocalTime = () => {
 export const Contact: React.FC = () => {
   const time = useLocalTime();
   return (
-    <section id="contact" aria-labelledby="contact-title" className="px-5 pt-16">
+    <section id="contact" aria-labelledby="contact-title" className="px-5 pt-20">
       <div className="relative mx-auto max-w-6xl text-center">
         <h2 id="contact-title" className="t-giant">
-          Let&apos;s Work
+          Let&apos;s work
           <br />
-          Together
+          together
         </h2>
         <a
           href={`mailto:${CONTACT.email}`}
           className="absolute left-1/2 top-1/2 grid size-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-blue text-center text-xs font-bold leading-tight shadow-[0_0_0_6px_var(--color-navy)] transition-transform hover:scale-110 sm:size-24 sm:text-sm"
         >
-          Hire Me
+          Hire me
         </a>
       </div>
 
@@ -134,7 +136,7 @@ export const Contact: React.FC = () => {
       <p className="mx-auto mt-10 max-w-6xl text-center t-small text-mute sm:text-right">
         Available for full-time, contract and consulting work.{' '}
         <a href={`mailto:${CONTACT.email}`} className="font-semibold text-sun underline-offset-4 hover:underline">
-          Let&apos;s Chat
+          Let&apos;s chat
         </a>
       </p>
 

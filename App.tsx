@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { SiteProvider, useSite } from './hooks/useSite';
 import { ProjectModal } from './components/ProjectModal';
 import { ChatWidget, CommandPalette } from './components/Assistant';
-import { Hero } from './sections/Hero';
+import { Hero, Nav } from './sections/Hero';
 import { FeaturedWorks, SideProjects } from './sections/Work';
 import { Experience, Process, Services } from './sections/Services';
 import { Bands, Contact, Numbers } from './sections/Closing';
@@ -37,6 +37,7 @@ const Page: React.FC = () => {
 
   return (
     <>
+      <Nav />
       <main>
         <Hero />
         <FeaturedWorks />

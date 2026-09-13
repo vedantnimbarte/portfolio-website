@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github, Star, X } from 'lucide-react';
 import { Project } from '../types';
 import projectsData from '../data/projects.json';
-import { getTechDetails } from './ui/tech';
+import { TechIcon } from './TechIcon';
 import { relativeTime } from '../lib/format';
 import { ProjectCover } from './ProjectCover';
 
@@ -92,15 +92,12 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onC
                 <p className="mt-5 t-body text-mute">{project.description}</p>
 
                 <ul className="mt-6 flex flex-wrap gap-2" aria-label="Stack">
-                  {project.tech.map((t) => {
-                    const { icon: Icon, label } = getTechDetails(t);
-                    return (
-                      <li key={t} className="flex items-center gap-1.5 rounded-full border border-line bg-deep px-3 py-1 t-small">
-                        <Icon size={13} className="text-blue" aria-hidden />
-                        {label}
-                      </li>
-                    );
-                  })}
+                  {project.tech.map((t) => (
+                    <li key={t} className="flex items-center gap-1.5 rounded-full border border-line bg-deep px-3 py-1 t-small">
+                      <TechIcon name={t} size={13} color />
+                      {t}
+                    </li>
+                  ))}
                 </ul>
               </div>
 
