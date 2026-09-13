@@ -1,21 +1,20 @@
-import React, { useCallback, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import { ConsoleProvider, useConsole } from './hooks/useConsole';
-import { useIsConsole } from './hooks/useMediaQuery';
-import { ConsoleShell } from './console/ConsoleShell';
-import { HandheldShell } from './console/HandheldShell';
-import { BootOverlay } from './console/BootOverlay';
+import React, { useEffect } from 'react';
+import { SiteProvider, useSite } from './hooks/useSite';
 import { ProjectModal } from './components/ProjectModal';
+import { ChatWidget, CommandPalette } from './components/Assistant';
+import { Hero } from './sections/Hero';
+import { FeaturedWorks, SideProjects } from './sections/Work';
+import { Experience, Process, Services } from './sections/Services';
+import { Bands, Contact, Numbers } from './sections/Closing';
 import projectsData from './data/projects.json';
 import type { Project } from './types';
 
 const PROJECTS = projectsData as Project[];
 
-const Console: React.FC = () => {
-  const { booted, project, dispatch } = useConsole();
-  const wide = useIsConsole();
+const Page: React.FC = () => {
+  const { project, dispatch } = useSite();
 
-  // Cmd-K / Ctrl-K opens the prompt. preventDefault is not optional: Chrome
+  // Cmd-K / Ctrl-K opens the palette. preventDefault is not optional: Chrome
   // sends Ctrl-K to the address bar and Firefox opens quick-find.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -36,21 +35,22 @@ const Console: React.FC = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [dispatch]);
 
-  const onBootDone = useCallback(() => dispatch({ type: 'BOOT_DONE' }), [dispatch]);
-
   return (
     <>
-      {/* The shell mounts at frame zero and the boot sequence overlays it, so
-          real content is in the DOM for crawlers, LCP is not delayed, and
-          there is nothing to re-layout when the sequence ends. */}
-      <div inert={!booted}>
-        {wide ? <ConsoleShell key="console" /> : <HandheldShell key="handheld" />}
-      </div>
+      <main>
+        <Hero />
+        <FeaturedWorks />
+        <Experience />
+        <Services />
+        <Process />
+        <SideProjects />
+        <Numbers />
+        <Bands />
+        <Contact />
+      </main>
 
-      <AnimatePresence>
-        {!booted && <BootOverlay key="boot" onDone={onBootDone} />}
-      </AnimatePresence>
-
+      <ChatWidget />
+      <CommandPalette />
       <ProjectModal
         project={PROJECTS.find((p) => p.name === project) ?? null}
         isOpen={Boolean(project)}
@@ -61,9 +61,9 @@ const Console: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  <ConsoleProvider>
-    <Console />
-  </ConsoleProvider>
+  <SiteProvider>
+    <Page />
+  </SiteProvider>
 );
 
 export default App;

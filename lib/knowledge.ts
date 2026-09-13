@@ -11,7 +11,7 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 
 /* ===========================================================================
    RECORD — aggregate facts, computed once from the committed repo snapshot.
-   Every number the console displays traces back to here or to constants.ts.
+   Every number the site displays traces back to here or to constants.ts.
    ========================================================================= */
 export const RECORD = {
   repos: PROJECTS.length,
@@ -25,7 +25,7 @@ export const RECORD = {
 
 /* ===========================================================================
    Derived entries. Nothing here retypes a fact — it indexes constants.ts and
-   data/projects.json, so `npm run fetch:projects` updates what the console
+   data/projects.json, so `npm run fetch:projects` updates what the assistant
    knows for free, and the answers cannot drift from the rendered content.
    ========================================================================= */
 
@@ -35,21 +35,21 @@ const identityEntries: KbEntry[] = [
     cite: `→ identity · ${CONTACT.location}`,
     body: `${HERO_DATA.name} — ${HERO_DATA.title}, operating out of ${HERO_DATA.location}. ${HERO_DATA.subtitle}`,
     aliases: ['who', 'name', 'operator', 'vedant', 'nimbarte', 'title', 'role', 'based', 'located', 'location', 'city', 'india', 'surat', 'timezone'],
-    actions: [{ kind: 'module', label: 'Open identity', module: 'identity' }],
+    actions: [{ kind: 'section', label: 'Go to intro', section: 'home' }],
   },
   {
     id: 'about/narrative',
     cite: '→ identity/narrative',
     body: ABOUT_PARAGRAPHS.join(' '),
     aliases: ['about', 'background', 'story', 'summary', 'bio', 'lifecycle', 'focus'],
-    actions: [{ kind: 'module', label: 'Open identity', module: 'identity' }],
+    actions: [{ kind: 'section', label: 'Go to intro', section: 'home' }],
   },
   {
     id: 'record/scale',
     cite: `→ record/${slug(RECORD.employer)} · production systems, not this page`,
     body: `Measured on production systems at ${RECORD.employer}: ${STATS.map((s) => `${s.value} ${s.label.toLowerCase()}`).join(', ')}. Public code: ${RECORD.repos} repositories, ${RECORD.stars} stars, last push ${relativeTime(RECORD.lastPush.updatedAt)}.`,
     aliases: ['scale', 'metrics', 'numbers', 'stats', 'uptime', 'users', 'traffic', 'impact', 'throughput', 'stars', 'repos'],
-    actions: [{ kind: 'module', label: 'Open work', module: 'work' }],
+    actions: [{ kind: 'section', label: 'See projects', section: 'work' }],
   },
 ];
 
@@ -70,7 +70,7 @@ const experienceEntries: KbEntry[] = EXPERIENCE_DATA.map((e, i) => ({
     'experience', 'employment', 'worked', 'history', 'career', 'job',
     ...(i === 0 ? ['current', 'now', 'present', 'employer', 'today'] : ['previous', 'past', 'former']),
   ],
-  actions: [{ kind: 'module', label: 'Open operations', module: 'ops' }],
+  actions: [{ kind: 'section', label: 'See experience', section: 'experience' }],
 }));
 
 const skillEntries: KbEntry[] = SKILLS_DATA.map((s) => ({
@@ -82,7 +82,7 @@ const skillEntries: KbEntry[] = SKILLS_DATA.map((s) => ({
     ...s.title.toLowerCase().split(/\W+/).filter(Boolean),
     'stack', 'tech', 'technology', 'skills', 'toolkit',
   ],
-  actions: [{ kind: 'module', label: 'Open stack', module: 'stack' }],
+  actions: [{ kind: 'section', label: 'See stack', section: 'stack' }],
 }));
 
 const projectEntries: KbEntry[] = PROJECTS.map((p) => ({
@@ -116,15 +116,15 @@ const CONTACT_ACTIONS = [
 const intentEntries: KbEntry[] = [
   {
     id: 'intent/greeting',
-    cite: '→ console/ready',
-    body: `Console online. I hold the operator's record — ${RECORD.posts} posts, ${RECORD.domains} stack domains, ${RECORD.repos} repositories. Ask a question, or press Cmd-K for commands.`,
+    cite: '→ assistant/ready',
+    body: `Hi. I answer questions about Vedant's work from what's on this page: ${RECORD.posts} roles, ${RECORD.domains} skill areas and ${RECORD.repos} repositories. Ask anything, or pick a prompt below.`,
     aliases: ['hello', 'hi', 'hey', 'greetings', 'yo'],
     weight: 1.15,
   },
   {
     id: 'intent/hire',
     cite: '→ contact/hire',
-    body: 'The operator is open to work — full-time, contract, or consultation. Fastest route is email; he replies to real briefs, typically inside 24 hours.',
+    body: 'Vedant is open to work — full-time, contract, or consultation. Fastest route is email; he replies to real briefs, typically inside 24 hours.',
     aliases: ['hire', 'hiring', 'recruit', 'recruiter', 'available', 'availability', 'open', 'rate', 'rates', 'salary', 'freelance', 'contract', 'consulting', 'role', 'position', 'opportunity', 'onboard'],
     actions: CONTACT_ACTIONS,
     weight: 1.15,
@@ -142,7 +142,7 @@ const intentEntries: KbEntry[] = [
     cite: '→ contact/credentials',
     body: CONTACT.resumeUrl
       ? 'Résumé is published — download it below.'
-      : "No résumé PDF is published on this console yet. The full record is here in OPERATIONS and STACK, and he'll send a PDF on request.",
+      : "There's no résumé PDF on the site yet. Experience and stack are both on this page, and he'll send a PDF on request.",
     aliases: ['resume', 'cv', 'curriculum', 'vitae', 'pdf', 'download', 'credentials'],
     actions: CONTACT.resumeUrl
       ? [{ kind: 'link' as const, label: 'Download résumé', href: CONTACT.resumeUrl }, ...CONTACT_ACTIONS]
@@ -151,8 +151,8 @@ const intentEntries: KbEntry[] = [
   },
   {
     id: 'intent/help',
-    cite: '→ console/index',
-    body: `This index covers identity, operations (${RECORD.posts} posts since ${RECORD.since}), stack (${RECORD.domains} domains), work (${RECORD.repos} repositories), and contact. Ask in plain language — "rust work", "is he available", "what has he built with AI". Cmd-K runs commands instead.`,
+    cite: '→ assistant/index',
+    body: `I cover his background, experience (${RECORD.posts} roles since ${RECORD.since}), stack (${RECORD.domains} areas), projects (${RECORD.repos} repositories) and contact details. Ask in plain language, like "rust work", "is he available" or "what has he built with AI".`,
     aliases: ['help', 'commands', 'usage', 'index', 'topics', 'ask'],
     weight: 1.15,
   },
@@ -161,8 +161,8 @@ const intentEntries: KbEntry[] = [
 const FALLBACK: KbEntry = {
   id: 'intent/fallback',
   cite: '→ index miss · 0 external calls',
-  body: `Not in the index. This console answers only from the operator's recorded work — no model, no network, so it does not guess. Covered: identity, operations, stack, ${RECORD.repos} repositories, contact.`,
-  actions: [...CONTACT_ACTIONS, { kind: 'module' as const, label: 'Browse work', module: 'work' as const }],
+  body: `I don't have an answer for that. I only answer from Vedant's recorded work, with no AI model and no network, so I don't guess. Try his experience, stack, ${RECORD.repos} projects or contact details.`,
+  actions: [...CONTACT_ACTIONS, { kind: 'section' as const, label: 'See projects', section: 'work' as const }],
   weight: 0,
 };
 
@@ -290,34 +290,13 @@ export const search = (query: string): Answer => {
         body: `${titles.length} matching repositories: ${shown.join(', ')}${
           rest > 0 ? `, and ${rest} more` : ''
         }.`,
-        actions: [{ kind: 'module', label: 'Open work', module: 'work' }],
+        actions: [{ kind: 'section', label: 'See projects', section: 'work' }],
       },
     ];
   }
 
   return { query, entries: kept, hit: true };
 };
-
-/* ===========================================================================
-   Boot script. Every count is interpolated from the same modules the index
-   reads, so the sequence cannot drift from reality. The "verifying record"
-   line names the employer so even the boot text doesn't let 99.9% float free.
-   ========================================================================= */
-
-export const BOOT_LINES: { text: string; hold?: number }[] = [
-  { text: '  VN-OS · personal console · v1' },
-  { text: `> mounting operator profile ......... ${HERO_DATA.name.toLowerCase()}` },
-  { text: `> role .............................. ${HERO_DATA.title.toLowerCase()}` },
-  { text: '> station ........................... surat, gujarat · asia/kolkata' },
-  { text: `> indexing experience ............... ${RECORD.posts} posts · ${RECORD.since} → present` },
-  { text: `> indexing stack .................... ${RECORD.domains} domains · rust, mern, aws/gcp` },
-  { text: `> indexing repositories ............. ${RECORD.repos} public · ${RECORD.stars} ★`, hold: 260 },
-  { text: '> loading inference notes ........... dlm · wingman · kortex-memory' },
-  { text: `> verifying record .................. ${STATS[2].value} uptime · ${STATS[1].value} daily users · ${RECORD.employer.toLowerCase()}`, hold: 260 },
-  { text: `> knowledge index ................... ${KB.length} entries · 0 external calls` },
-  { text: '> console online. no model, no network — just his record.', hold: 400 },
-  { text: '  Cmd-K for commands, or ask a question.' },
-];
 
 export const SUGGESTED = ['Rust work?', 'Is he available?', 'AI projects', 'Where has he worked?'];
 

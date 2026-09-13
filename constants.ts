@@ -77,7 +77,7 @@ export const SKILLS_DATA: SkillCategory[] = [
   { title: "AI & Systems", skills: ["LLM Integration", "Inference Engines", "MCP", "System Design", "Performance Tuning"] },
 ];
 
-// AI-native / cloud capabilities — surfaced in the About section.
+// Capabilities, shown in the services bento.
 export const CAPABILITIES: FeatureBlock[] = [
   {
     title: "AI Integration",
@@ -96,15 +96,14 @@ export const CAPABILITIES: FeatureBlock[] = [
   }
 ];
 
-// The operator's own narrative. Hoisted out of the old About.tsx JSX so
-// lib/knowledge.ts can index it without a second copy of the same sentences.
+// Narrative, indexed by lib/knowledge.ts for the assistant.
 export const ABOUT_PARAGRAPHS: string[] = [
-  "Operator carries 5+ years across the full software lifecycle — scalable web applications on the MERN stack, Python, and modern cloud platforms. Recent activity indicates a shift toward systems-level work in Rust: inference engines, a browser written from scratch, and terminal-native tools.",
-  "Primary focus is fault-tolerant architecture on AWS and GCP, and generative AI embedded in production — LLM inference, agentic workflows, MCP-based memory layers. Optimization bias runs toward performance, security, and long-term maintainability rather than feature count.",
+  "Vedant has 5+ years across the full software lifecycle: scalable web applications on the MERN stack, Python, and modern cloud platforms. His recent work has moved toward systems-level Rust, including inference engines, a browser written from scratch, and terminal-native tools.",
+  "His main focus is fault-tolerant architecture on AWS and GCP, and generative AI in production: LLM inference, agentic workflows and MCP-based memory layers. He optimizes for performance, security and long-term maintainability over feature count.",
 ];
 
-// Every channel the console can route a visitor to. `resumeUrl` is null until
-// a PDF lands in public/ — the resume command degrades to an honest answer
+// Every channel the site can route a visitor to. `resumeUrl` is null until
+// a PDF lands in public/ — the assistant's resume answer degrades to an honest answer
 // rather than a 404, so setting this one constant is the whole wiring.
 export const CONTACT = {
   email: "vedantnimbarteofficial@gmail.com",
