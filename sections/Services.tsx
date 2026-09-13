@@ -1,7 +1,7 @@
 import React from 'react';
-import { Bot, Box, Cloud, Cpu, Search, Settings, Sparkles } from 'lucide-react';
+import { Bot, Box, Check, Cloud, Cpu, Search, Settings, Sparkles } from 'lucide-react';
 import { CAPABILITIES, CONTACT, EXPERIENCE_DATA } from '../constants';
-import { Marquee, Pill } from '../components/ui';
+import { Pill } from '../components/ui';
 import { goTo } from '../hooks/useSite';
 
 /* ------------------------------------------------------------ experience */
@@ -11,50 +11,53 @@ const initials = (s: string) =>
 
 const AVATAR = ['#146ef5', '#1f8a5b', '#5b4bdb', '#d97706'];
 
-const NOTES = EXPERIENCE_DATA.flatMap((job, j) =>
-  job.highlights.map((text) => ({ job, text, color: AVATAR[j % AVATAR.length] }))
-);
+export const Experience: React.FC = () => (
+  <section id="experience" aria-labelledby="exp-title" className="mx-auto max-w-5xl px-5 py-20">
+    <h2 id="exp-title" className="t-h2 text-center">Where I&apos;ve worked</h2>
 
-const Note: React.FC<{ note: (typeof NOTES)[number] }> = ({ note }) => (
-  <figure className="card sheen w-[300px] shrink-0 p-5 sm:w-[340px]">
-    <figcaption className="flex items-center gap-3">
-      <span
-        className="grid size-10 shrink-0 place-items-center rounded-full text-sm font-bold"
-        style={{ backgroundColor: note.color }}
-        aria-hidden
-      >
-        {initials(note.job.company)}
-      </span>
-      <span className="min-w-0">
-        <span className="block truncate t-small font-semibold">{note.job.company}</span>
-        <span className="block truncate text-[11px] text-mute">{note.job.role}</span>
-      </span>
-    </figcaption>
-    <blockquote className="mt-4 t-small text-mute">{note.text}</blockquote>
-  </figure>
-);
+    <ol className="mt-12 grid gap-5 md:grid-cols-2">
+      {EXPERIENCE_DATA.map((job, i) => (
+        <li key={job.company} className="card sheen flex flex-col p-6">
+          <div className="flex items-start gap-3">
+            <span
+              aria-hidden
+              className="grid size-11 shrink-0 place-items-center rounded-full text-sm font-bold"
+              style={{ backgroundColor: AVATAR[i % AVATAR.length] }}
+            >
+              {initials(job.company)}
+            </span>
+            <div className="min-w-0 flex-1">
+              <h3 className="t-h3">{job.role}</h3>
+              <p className="t-small text-mute">
+                {job.company}, {job.location}
+              </p>
+            </div>
+            {i === 0 && (
+              <span className="shrink-0 rounded-full bg-sun px-2.5 py-0.5 text-[11px] font-semibold text-navy">Current</span>
+            )}
+          </div>
 
-export const Experience: React.FC = () => {
-  const half = Math.ceil(NOTES.length / 2);
-  return (
-    <section id="experience" aria-labelledby="exp-title" className="py-24">
-      <h2 id="exp-title" className="t-h2 px-5 text-center">Results from My Past Roles</h2>
-      <div className="mt-12 space-y-5">
-        <Marquee seconds={70}>
-          {NOTES.slice(0, half).map((n) => <Note key={n.text} note={n} />)}
-        </Marquee>
-        <Marquee seconds={70} reverse>
-          {NOTES.slice(half).map((n) => <Note key={n.text} note={n} />)}
-        </Marquee>
-      </div>
-      <div className="mt-10 text-center">
-        <Pill href="#contact" onClick={(e) => { e.preventDefault(); goTo('contact'); }}>
-          Contact Now
-        </Pill>
-      </div>
-    </section>
-  );
-};
+          <p className="mt-4 t-small font-medium text-ink/80">{job.period}</p>
+
+          <ul className="mt-3 space-y-2.5">
+            {job.highlights.slice(0, 3).map((h) => (
+              <li key={h} className="flex gap-2.5 t-small text-mute">
+                <Check size={16} className="mt-0.5 shrink-0 text-blue" aria-hidden />
+                {h}
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
+
+    <div className="mt-10 text-center">
+      <Pill href="#contact" onClick={(e) => { e.preventDefault(); goTo('contact'); }}>
+        Contact me
+      </Pill>
+    </div>
+  </section>
+);
 
 /* -------------------------------------------------------------- services */
 
@@ -80,11 +83,11 @@ jobs:
       - run: kubectl rollout status deploy/api`;
 
 export const Services: React.FC = () => (
-  <section id="services" aria-labelledby="services-title" className="mx-auto max-w-5xl px-5 py-24">
+  <section id="services" aria-labelledby="services-title" className="mx-auto max-w-5xl px-5 py-20">
     <div className="flex flex-wrap items-end justify-between gap-6">
-      <h2 id="services-title" className="t-h2 max-w-md">What I Can Build with My Full Stack Toolkit</h2>
+      <h2 id="services-title" className="t-h2 max-w-md">What I can build with my full stack toolkit</h2>
       <Pill href="#contact" onClick={(e) => { e.preventDefault(); goTo('contact'); }}>
-        Contact Now
+        Contact me
       </Pill>
     </div>
 
@@ -171,9 +174,9 @@ const STEPS = [
 ];
 
 export const Process: React.FC = () => (
-  <section aria-labelledby="steps-title" className="mx-auto max-w-5xl px-5 py-24">
+  <section aria-labelledby="steps-title" className="mx-auto max-w-5xl px-5 py-16">
     <h2 id="steps-title" className="t-h2 mx-auto max-w-lg text-center">
-      You&apos;re Just 3 Steps from a Shipped Product
+      You&apos;re just 3 steps from a shipped product
     </h2>
 
     <ol className="mt-12 grid gap-5 md:grid-cols-3">
@@ -193,7 +196,7 @@ export const Process: React.FC = () => (
     </ol>
 
     <div className="mt-10 text-center">
-      <Pill href={`mailto:${CONTACT.email}`}>Get Started</Pill>
+      <Pill href={`mailto:${CONTACT.email}`}>Get started</Pill>
     </div>
   </section>
 );

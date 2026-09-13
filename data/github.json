@@ -1,0 +1,31 @@
+{
+  "login": "vedantnimbarte",
+  "url": "https://github.com/vedantnimbarte",
+  "contributionsLastYear": 2357,
+  "achievements": [
+    {
+      "slug": "pull-shark",
+      "name": "Pull Shark",
+      "tier": "x3",
+      "description": "Opened pull requests that have been merged"
+    },
+    {
+      "slug": "pair-extraordinaire",
+      "name": "Pair Extraordinaire",
+      "tier": null,
+      "description": "Coauthored commits on merged pull requests"
+    },
+    {
+      "slug": "quickdraw",
+      "name": "Quickdraw",
+      "tier": null,
+      "description": "Closed an issue or pull request within 5 minutes of opening"
+    },
+    {
+      "slug": "yolo",
+      "name": "YOLO",
+      "tier": null,
+      "description": "Merged a pull request without code review"
+    }
+  ]
+}

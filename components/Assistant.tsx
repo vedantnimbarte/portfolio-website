@@ -8,6 +8,7 @@ import { SUGGESTED } from '../lib/knowledge';
 import { SiteCommand, filterCommands, looksLikeQuestion } from '../lib/commands';
 import { goTo, useSite } from '../hooks/useSite';
 import { useTypewriter } from '../hooks/useTypewriter';
+import portrait from '../assets/profile.jpg';
 
 const chip =
   'flex items-center gap-1.5 rounded-full border border-line bg-deep px-3 py-1.5 text-xs text-mute transition-colors hover:border-blue hover:text-ink';
@@ -128,7 +129,7 @@ export const ChatWidget: React.FC = () => {
             className="card fixed bottom-24 right-4 z-[150] flex h-[min(540px,calc(100dvh-8rem))] w-[min(380px,calc(100vw-2rem))] origin-bottom-right flex-col overflow-hidden shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)] sm:right-6"
           >
             <div className="flex items-center gap-3 border-b border-line px-4 py-3">
-              <span className="grid size-9 place-items-center rounded-full bg-gradient-to-br from-blue to-plum text-xs font-bold">VN</span>
+              <img src={portrait} alt="" className="size-9 rounded-full object-cover" />
               <div className="min-w-0 flex-1">
                 <p className="t-small font-semibold">Ask about Vedant</p>
                 <p className="text-[11px] text-mute">Answers from this site only, no AI model</p>

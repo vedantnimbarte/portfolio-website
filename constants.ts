@@ -80,18 +80,18 @@ export const SKILLS_DATA: SkillCategory[] = [
 // Capabilities, shown in the services bento.
 export const CAPABILITIES: FeatureBlock[] = [
   {
-    title: "AI Integration",
+    title: "AI integration",
     description: "Embedding LLMs and agentic workflows directly into production — from inference engines to MCP-based memory layers and multi-provider coding agents.",
     icon: Cpu
   },
   {
-    title: "Cloud Architecture",
+    title: "Cloud architecture",
     description: "Designing fault-tolerant systems on AWS and GCP with serverless patterns and managed services that scale without maintenance overhead.",
     icon: Cloud
   },
   {
-    title: "DevOps & Reliability",
-    description: "Automating the path to production with Docker/K8s CI/CD pipelines, ensuring 99.9% uptime through proactive monitoring and self-healing infra.",
+    title: "DevOps and reliability",
+    description: "Automating the path to production with Docker/K8s CI/CD pipelines, with proactive monitoring and self-healing infrastructure that keeps services up.",
     icon: GitBranch
   }
 ];

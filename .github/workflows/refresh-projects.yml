@@ -1,7 +1,7 @@
 name: Refresh projects
 
-# data/projects.json is a committed build-time snapshot of the operator's
-# GitHub. This keeps stars and timestamps from going stale without anyone
+# data/projects.json and data/github.json are committed build-time snapshots
+# of the GitHub profile. This keeps stars and timestamps from going stale without anyone
 # remembering to run `npm run fetch:projects` by hand.
 on:
   schedule:
@@ -28,16 +28,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-projects.mjs
 
+      # Achievements and the contribution total, read from the public profile.
+      - name: Fetch profile achievements
+        run: node scripts/fetch-github.mjs
+
       # The script throws on incomplete data, so a bad fetch fails the run
       # instead of committing garbage.
       - name: Commit if changed
         run: |
-          if git diff --quiet -- data/projects.json; then
+          if [ -z "$(git status --porcelain -- data assets/github)" ]; then
             echo "No change."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/projects.json
-          git commit -m "chore: refresh project snapshot"
+          git add data assets/github
+          git commit -m "chore: refresh GitHub snapshot"
           git push

@@ -121,8 +121,9 @@
     outline: 2px solid var(--color-sun);
     outline-offset: 3px;
   }
+  /* Clears the sticky nav. */
   section[id] {
-    scroll-margin-top: 1.5rem;
+    scroll-margin-top: 4.5rem;
   }
 }
 
