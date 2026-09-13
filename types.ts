@@ -39,23 +39,16 @@ export interface FeatureBlock {
   description: string;
   icon: LucideIcon;
 }
-/* ------------------------------------------------------------------- console */
+/* ------------------------------------------------------------------ sections */
 
-export type ModuleId = 'identity' | 'ops' | 'work' | 'stack' | 'query';
-
-export interface ModuleMeta {
-  id: ModuleId;
-  label: string;        // rail label, e.g. "OPERATIONS"
-  title: string;        // panel heading
-  hint: string;         // one-line mono descriptor under the heading
-  icon: LucideIcon;
-}
+// Every in-page anchor the palette and the assistant can jump to.
+export type SectionId = 'home' | 'stack' | 'work' | 'experience' | 'services' | 'contact';
 
 /* ----------------------------------------------------------------- knowledge */
 
 // An action a knowledge entry can offer alongside its answer.
 export type KbAction =
-  | { kind: 'module'; label: string; module: ModuleId }
+  | { kind: 'section'; label: string; section: SectionId }
   | { kind: 'project'; label: string; name: string }
   | { kind: 'copy'; label: string; value: string }
   | { kind: 'link'; label: string; href: string };
@@ -86,7 +79,7 @@ export interface Message {
 
 export interface Command {
   id: string;
-  group: 'module' | 'action' | 'project';
+  group: 'section' | 'action' | 'project';
   label: string;
   hint?: string;        // right-aligned, e.g. 'Rust · 2★'
   keywords?: string[];

@@ -1,137 +1,99 @@
 @import "tailwindcss";
 
 /* ============================================================================
-   VN-OS design tokens
-   Grounded in instrumentation — oscilloscope traces, PCB silkscreen, mil-spec
-   faceplates — not in movie holograms. Hairlines and density over bloom.
+   Design tokens. Deep navy ground, white type, one blue for actions and one
+   yellow reserved for the banner and the closing call to action.
    ========================================================================= */
 @theme {
-  /* Type. Two families; Archivo's width axis carries the display contrast. */
   --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Chassis */
-  --color-void:    #04060a; /* deepest ground, behind the chassis */
-  --color-hull:    #0a0f16; /* panel fill */
-  --color-bezel:   #111925; /* raised chrome: rail, telemetry, status bar */
-  --color-trace:   #1b2c3a; /* hairlines, grid, inactive borders */
-
-  /* Signal. Two hues, and the second one is load-bearing:
-     cyan  = LIVE — this session, this browser, right now
-     amber = RECORD — historical, measured elsewhere (Cloudairy production)
-     Never mix them in one row. See Telemetry.tsx. */
-  --color-signal:  #35dce8; /* deliberately not cyan-400 — pulled to phosphor */
-  --color-record:  #f0a828;
-  --color-alert:   #ff5470;
-
-  /* Ink */
-  --color-ink:     #c9dce4;
-  --color-ink-dim: #6b8390;
-
-  /* The console/handheld chassis switch. Mirrored as a literal in
-     hooks/useMediaQuery.ts — keep the two in sync. */
-  --breakpoint-console: 900px;
+  --color-navy:  #0d1526; /* page */
+  --color-deep:  #0a1120; /* inset wells: code, cover frames */
+  --color-panel: #131d33; /* cards */
+  --color-line:  #213052; /* card borders, dividers */
+  --color-ink:   #ffffff;
+  --color-mute:  #93a0ba;
+  --color-blue:  #146ef5;
+  --color-sun:   #ffd84a;
+  --color-plum:  #5b4bdb; /* only in the step icon gradient */
 }
 
 /* ---------------------------------------------------------------- type roles
-   Scale is a 1.25 minor third; mono sits on a 4px grid. Caps appear ONLY in
-   mono chrome, where they name a readout row and do structural work. */
+   Minor-third scale. One family; weight and width carry the hierarchy. */
 
-@utility t-nameplate {
-  font-family: var(--font-sans);
-  font-variation-settings: "wdth" 125, "wght" 700;
-  font-size: clamp(2.75rem, 6vw, 5rem);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+@utility t-hero {
+  font-size: clamp(2.25rem, 5.2vw, 3.75rem);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
-@utility t-module {
-  font-family: var(--font-sans);
-  font-variation-settings: "wdth" 125, "wght" 600;
-  font-size: 1.5rem;
-  line-height: 1.15;
+@utility t-h2 {
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+@utility t-h3 {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-@utility t-prose {
-  font-family: var(--font-sans);
-  font-variation-settings: "wdth" 100, "wght" 400;
+@utility t-body {
   font-size: 0.9375rem;
-  line-height: 1.65;
-  max-width: 68ch;
+  line-height: 1.6;
 }
 
-@utility t-readout {
-  font-family: var(--font-mono);
+@utility t-small {
   font-size: 0.8125rem;
-  line-height: 1.4;
-  font-weight: 500;
+  line-height: 1.5;
 }
 
-@utility t-label {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  line-height: 1.2;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+@utility t-giant {
+  font-variation-settings: "wdth" 88;
+  font-size: clamp(3.25rem, 13vw, 10.5rem);
+  line-height: 0.86;
+  font-weight: 800;
+  letter-spacing: -0.035em;
   text-transform: uppercase;
 }
 
-@utility t-micro {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  line-height: 1.2;
-  letter-spacing: 0.04em;
+/* ------------------------------------------------------------------ surfaces */
+
+@utility card {
+  background-color: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
 }
 
-/* ----------------------------------------------------------------- geometry
-   Chamfer, don't round. A 45° cut corner reads as machined panel; a uniform
-   border-radius reads as a SaaS card. */
-
-@utility chamfer {
-  clip-path: polygon(
-    10px 0, 100% 0, 100% calc(100% - 10px),
-    calc(100% - 10px) 100%, 0 100%, 0 10px
-  );
+/* Soft top-light, the way the reference cards catch light on their top edge. */
+@utility sheen {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-@utility chamfer-sm {
-  clip-path: polygon(
-    6px 0, 100% 0, 100% calc(100% - 6px),
-    calc(100% - 6px) 100%, 0 100%, 0 6px
-  );
+/* ------------------------------------------------------------------- marquee
+   Two identical copies in one track; translating by -50% loops seamlessly.
+   The copy is aria-hidden and inert at the call site. */
+
+@utility marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
-/* Depth from inset bevels, the way a real panel does it. No drop shadows. */
-@utility bevel {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
-}
-
-/* The dot-leader row: `role ········ senior full stack`. Lifted from datasheets
-   and BOMs. The leader itself is decorative — aria-hidden at the call site. */
-@utility leader {
+@utility marquee-track {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  &::after {
-    content: "";
-    flex: 1;
-    order: 1;
-    height: 0;
-    border-bottom: 1px dotted color-mix(in srgb, var(--color-ink-dim) 45%, transparent);
-    transform: translateY(-0.25em);
-  }
-  & > :last-child { order: 2; }
+  width: max-content;
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+  .marquee:hover & { animation-play-state: paused; }
 }
 
-/* Faint instrument grid. Masked at the call site where needed. */
-@utility gridfield {
-  background-image:
-    linear-gradient(rgba(53, 220, 232, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(53, 220, 232, 0.045) 1px, transparent 1px);
-  background-size: 32px 32px;
+@keyframes marquee {
+  to { transform: translateX(-50%); }
 }
 
 @utility scrollbar-hide {
@@ -139,51 +101,43 @@
   &::-webkit-scrollbar { display: none; }
 }
 
-/* --------------------------------------------------------------------- base
-   The console is fixed. The page never scrolls; content scrolls inside panels.
-   100dvh (not vh) or iOS Safari's collapsing URL bar cuts off the dock. */
+/* --------------------------------------------------------------------- base */
 @layer base {
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
+  html {
+    scroll-behavior: smooth;
   }
   body {
-    background-color: var(--color-void);
+    background-color: var(--color-navy);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-variation-settings: "wdth" 100, "wght" 400;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
   ::selection {
-    background: color-mix(in srgb, var(--color-signal) 30%, transparent);
+    background: var(--color-blue);
     color: #ffffff;
   }
-  /* Focus is never invisible — this is a keyboard-driven UI. */
   :focus-visible {
-    outline: 2px solid var(--color-signal);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-sun);
+    outline-offset: 3px;
   }
-  dialog::backdrop {
-    background: rgba(4, 6, 10, 0.82);
-    backdrop-filter: blur(2px);
+  section[id] {
+    scroll-margin-top: 1.5rem;
   }
 }
 
 /* --------------------------------------------------------------- scrollbars */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--color-void); }
-::-webkit-scrollbar-thumb { background: var(--color-trace); }
-::-webkit-scrollbar-thumb:hover { background: #24405a; }
-
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-trace); }
+::-webkit-scrollbar { width: 10px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-navy); }
+::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 999px; }
 
 /* ------------------------------------------------------------------- motion
-   Chrome animation is CSS-driven precisely so this one rule neutralizes it.
-   JS-driven motion is gated separately via useReducedMotion(). */
+   Marquees stop and become swipeable lists; smooth scrolling turns off. */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee { overflow-x: auto; mask-image: none; }
+  .marquee-track { animation: none; }
+  .marquee-copy { display: none; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;

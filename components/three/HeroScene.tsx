@@ -1,13 +1,13 @@
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Sparkles, Edges } from '@react-three/drei';
 import { useReducedMotion } from 'framer-motion';
 import * as THREE from 'three';
 
-// three cannot read CSS custom properties — these mirror --color-signal and a
+// three cannot read CSS custom properties — these mirror --color-blue and a
 // lighter edge tint from index.css. Change both together.
-const SIGNAL = '#35dce8';
-const EDGE = '#a8f0f7';
+const SIGNAL = '#2f7dff';
+const EDGE = '#b9d3ff';
 
 // Fixed shard placements around the core (deterministic — no Math.random).
 const SHARDS: { pos: [number, number, number]; size: number }[] = [
@@ -55,7 +55,7 @@ const Core: React.FC<{ reduced: boolean }> = ({ reduced }) => {
         </mesh>
         <mesh scale={0.55}>
           <icosahedronGeometry args={[1.3, 0]} />
-          <meshBasicMaterial color="#e6feff" />
+          <meshBasicMaterial color="#ffe89a" />
         </mesh>
         <mesh scale={1.42}>
           <icosahedronGeometry args={[1.3, 1]} />
@@ -95,14 +95,13 @@ const Shards: React.FC<{ reduced: boolean }> = ({ reduced }) => {
 };
 
 // CSS-only stand-in for reduced-motion and for WebGL failure. Purely
-// decorative — the stack list it used to carry now lives beside the canvas in
-// the Identity module, where a screen reader can actually read it.
+// decorative.
 const StaticCore: React.FC = () => (
   <div className="relative flex h-full w-full items-center justify-center" aria-hidden>
-    <div className="h-48 w-48 rounded-full bg-signal/10 blur-2xl" />
-    <div className="absolute h-36 w-36 rounded-full border border-signal/30 bg-signal/5" />
-    <div className="absolute h-20 w-20 rounded-full border border-signal/50" />
-    <div className="absolute h-2.5 w-2.5 rounded-full bg-signal" />
+    <div className="h-48 w-48 rounded-full bg-blue/15 blur-2xl" />
+    <div className="absolute h-36 w-36 rounded-full border border-blue/40 bg-blue/10" />
+    <div className="absolute h-20 w-20 rounded-full border border-blue/60" />
+    <div className="absolute h-2.5 w-2.5 rounded-full bg-sun" />
   </div>
 );
 
@@ -121,6 +120,15 @@ class SceneBoundary extends React.Component<
 
 const HeroScene: React.FC = () => {
   const reduced = useReducedMotion() ?? false;
+
+  // react-three-fiber sizes its canvas from a ResizeObserver, which only
+  // delivers during a rendering frame. If it mounts while the tab is throttled
+  // the canvas stays at its 300x150 default. One resize event routes through
+  // the same measure path and is not frame-dependent.
+  useEffect(() => {
+    const t = window.setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+    return () => clearTimeout(t);
+  }, []);
 
   if (reduced) return <StaticCore />;
 
