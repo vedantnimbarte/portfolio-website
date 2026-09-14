@@ -51,12 +51,23 @@ function fetchRepo({ repo, title, blurb }) {
     ])
   );
 
-  let languages = [];
-  try {
-    languages = Object.keys(JSON.parse(gh(['api', `repos/${OWNER}/${repo}/languages`])));
-  } catch {
-    // languages endpoint can 404 on empty repos — fall back to primary only
+  // Sizes and GitHub's own colours, for the language bar on the work index.
+  const LANGS = `query($owner:String!,$name:String!){repository(owner:$owner,name:$name){
+    languages(first:10,orderBy:{field:SIZE,direction:DESC}){totalSize edges{size node{name color}}}}}`;
+  const { totalSize = 0, edges = [] } =
+    JSON.parse(gh(['api', 'graphql', '-f', `query=${LANGS}`, '-f', `owner=${OWNER}`, '-f', `name=${repo}`]))
+      .data.repository.languages ?? {};
+  const languages = edges.map((e) => e.node.name);
+
+  // Under 1% folds into "Other", the way GitHub's own bar reads at a glance.
+  const breakdown = [];
+  let other = 0;
+  for (const e of edges) {
+    const percent = totalSize ? (e.size / totalSize) * 100 : 0;
+    if (percent < 1) other += percent;
+    else breakdown.push({ name: e.node.name, color: e.node.color ?? '#8b949e', percent: Math.round(percent * 10) / 10 });
   }
+  if (other >= 0.1) breakdown.push({ name: 'Other', color: '#8b949e', percent: Math.round(other * 10) / 10 });
 
   const language = meta.primaryLanguage?.name ?? null;
   const topics = (meta.repositoryTopics ?? []).map((t) => t.name);
@@ -77,6 +88,7 @@ function fetchRepo({ repo, title, blurb }) {
     githubUrl: meta.url,
     homepageUrl: meta.homepageUrl || null,
     topics,
+    languages: breakdown,
     private: meta.isPrivate ?? false,
   };
   project.category = categorize(project);
@@ -92,7 +104,7 @@ const projects = FEATURED.map((f) => {
 
 // self-check: every featured repo resolved with the fields the UI relies on
 for (const p of projects) {
-  if (!p.name || !p.description || !p.githubUrl || !Array.isArray(p.tech)) {
+  if (!p.name || !p.description || !p.githubUrl || !Array.isArray(p.tech) || !Array.isArray(p.languages)) {
     throw new Error(`Incomplete project data for "${p.name || '?'}": ${JSON.stringify(p)}`);
   }
 }

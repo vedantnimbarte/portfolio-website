@@ -40,7 +40,8 @@ npm run preview
 
 ## Data
 
-`data/projects.json` is a committed snapshot generated from GitHub:
+`data/projects.json` is a committed snapshot generated from GitHub, including each
+repo's language breakdown (sizes and GitHub's colours) for the work index bars:
 
 ```
 npm run fetch:projects      # needs the gh CLI, authenticated

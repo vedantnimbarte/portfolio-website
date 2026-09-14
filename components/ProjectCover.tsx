@@ -27,6 +27,13 @@ const motif = (p: Project): Motif => {
   return 'chat';
 };
 
+/** Cover proportions that suit each motif: terminals run tall, app windows
+ *  wide, chats square. Drives the staggered heights in the work masonry. */
+export const coverAspect = (p: Project) =>
+  screenshot(p.name)
+    ? 'aspect-[16/10]'
+    : { terminal: 'aspect-square', window: 'aspect-[4/3]', chat: 'aspect-[5/4]' }[motif(p)];
+
 const BUILD: Record<string, [string, string]> = {
   Rust: ['cargo build --release', 'Finished `release` profile [optimized]'],
   Python: ['pip install -e .', 'Successfully installed'],
@@ -41,7 +48,7 @@ const Dots: React.FC = () => (
   </>
 );
 
-const frame = 'absolute inset-x-[8%] top-[12%] -bottom-6 overflow-hidden rounded-t-xl text-left';
+const frame = 'absolute inset-x-[8%] top-[17%] -bottom-6 overflow-hidden rounded-t-xl text-left';
 
 const Terminal: React.FC<{ p: Project; compact: boolean }> = ({ p, compact }) => {
   const [cmd, out] = BUILD[p.language ?? ''] ?? ['make', 'done'];
@@ -99,7 +106,7 @@ const Window: React.FC<{ p: Project; compact: boolean; dark: boolean }> = ({ p, 
 };
 
 const Chat: React.FC<{ p: Project; compact: boolean }> = ({ p, compact }) => (
-  <div className={`absolute inset-x-[10%] top-[10%] flex flex-col gap-2 text-left ${compact ? 'text-[10px]' : 'text-xs sm:text-[13px]'}`}>
+  <div className={`absolute inset-x-[10%] top-[56%] flex -translate-y-1/2 flex-col gap-2 text-left ${compact ? 'text-[10px]' : 'text-xs sm:text-[13px]'}`}>
     <p className="self-end rounded-2xl rounded-br-md bg-navy px-3.5 py-2 text-ink shadow-lg">
       What is {p.title} built with?
     </p>
@@ -135,7 +142,7 @@ export const ProjectCover: React.FC<{ project: Project; index: number; compact?:
           src={shot}
           alt=""
           loading="lazy"
-          className="absolute left-[8%] top-[12%] w-[84%] rounded-t-xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.45)]"
+          className="absolute left-[8%] top-[17%] w-[84%] rounded-t-xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.45)]"
         />
       ) : {
         terminal: <Terminal p={project} compact={compact} />,
