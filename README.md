@@ -46,8 +46,10 @@ npm run preview
 npm run fetch:projects      # needs the gh CLI, authenticated
 ```
 
-`data/github.json` and the badge images in `assets/github/` come from the public
-GitHub profile (achievements have no API, so the script reads the profile page):
+`data/github.json` (achievements, past-year contributions, and all-time commit and
+pull request totals across public repos) and the badge images in `assets/github/`
+come from the public GitHub profile. Achievements have no API, so the script reads
+the profile page; the totals come from the search API:
 
 ```
 npm run fetch:github
