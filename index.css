@@ -62,6 +62,17 @@
   text-transform: uppercase;
 }
 
+/* Hero callout figures: Archivo pushed wide and heavy, so a number reads as an
+   annotation on a diagram rather than a dashboard tile. */
+@utility t-count {
+  font-variation-settings: "wdth" 118;
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  line-height: 0.95;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ------------------------------------------------------------------ surfaces */
 
 @utility card {
@@ -94,6 +105,23 @@
 
 @keyframes marquee {
   to { transform: translateX(-50%); }
+}
+
+/* ------------------------------------------------------------- hero orbit
+   The page's one orchestrated moment: calendar dots sweep in clockwise week
+   by week (delay set per dot). Stickers drift slowly, each on its own period. */
+.orbit-cell {
+  animation: orbit-cell-in 0.5s ease-out both;
+}
+@keyframes orbit-cell-in {
+  from { opacity: 0; }
+}
+.orbit-drift {
+  animation: orbit-drift var(--drift, 8s) ease-in-out infinite;
+}
+@keyframes orbit-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 @utility scrollbar-hide {
@@ -139,6 +167,7 @@
   .marquee { overflow-x: auto; mask-image: none; }
   .marquee-track { animation: none; }
   .marquee-copy { display: none; }
+  .orbit-cell, .orbit-drift { animation: none; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;

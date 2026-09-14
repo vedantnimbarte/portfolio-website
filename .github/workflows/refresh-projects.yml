@@ -29,7 +29,9 @@ jobs:
         run: node scripts/fetch-projects.mjs
 
       # Achievements and the contribution total, read from the public profile.
-      - name: Fetch profile achievements
+      - name: Fetch profile achievements and totals
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-github.mjs
 
       # The script throws on incomplete data, so a bad fetch fails the run
