@@ -1,63 +1,8 @@
 import React from 'react';
-import { Bot, Box, Check, Cloud, Cpu, Search, Settings, Sparkles } from 'lucide-react';
-import { CAPABILITIES, CONTACT, EXPERIENCE_DATA } from '../constants';
+import { Bot, Box, Cloud, Cpu, Search, Settings, Sparkles } from 'lucide-react';
+import { CAPABILITIES, CONTACT } from '../constants';
 import { Pill } from '../components/ui';
 import { goTo } from '../hooks/useSite';
-
-/* ------------------------------------------------------------ experience */
-
-const initials = (s: string) =>
-  s.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 2).map((w) => w[0]).join('') || s[0];
-
-const AVATAR = ['#146ef5', '#1f8a5b', '#5b4bdb', '#d97706'];
-
-export const Experience: React.FC = () => (
-  <section id="experience" aria-labelledby="exp-title" className="mx-auto max-w-5xl px-5 py-20">
-    <h2 id="exp-title" className="t-h2 text-center">Where I&apos;ve worked</h2>
-
-    <ol className="mt-12 grid gap-5 md:grid-cols-2">
-      {EXPERIENCE_DATA.map((job, i) => (
-        <li key={job.company} className="card sheen flex flex-col p-6">
-          <div className="flex items-start gap-3">
-            <span
-              aria-hidden
-              className="grid size-11 shrink-0 place-items-center rounded-full text-sm font-bold"
-              style={{ backgroundColor: AVATAR[i % AVATAR.length] }}
-            >
-              {initials(job.company)}
-            </span>
-            <div className="min-w-0 flex-1">
-              <h3 className="t-h3">{job.role}</h3>
-              <p className="t-small text-mute">
-                {job.company}, {job.location}
-              </p>
-            </div>
-            {i === 0 && (
-              <span className="shrink-0 rounded-full bg-sun px-2.5 py-0.5 text-[11px] font-semibold text-navy">Current</span>
-            )}
-          </div>
-
-          <p className="mt-4 t-small font-medium text-ink/80">{job.period}</p>
-
-          <ul className="mt-3 space-y-2.5">
-            {job.highlights.slice(0, 3).map((h) => (
-              <li key={h} className="flex gap-2.5 t-small text-mute">
-                <Check size={16} className="mt-0.5 shrink-0 text-blue" aria-hidden />
-                {h}
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ol>
-
-    <div className="mt-10 text-center">
-      <Pill href="#contact" onClick={(e) => { e.preventDefault(); goTo('contact'); }}>
-        Contact me
-      </Pill>
-    </div>
-  </section>
-);
 
 /* -------------------------------------------------------------- services */
 
