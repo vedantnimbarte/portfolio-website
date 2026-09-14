@@ -20,6 +20,8 @@ export interface Project {
   githubUrl: string;
   homepageUrl: string | null;
   topics: string[];
+  /** Share of code by size, GitHub's colours, under 1% folded into Other. */
+  languages: { name: string; color: string; percent: number }[];
   private: boolean;
   category: 'ai' | 'systems' | 'apps';
 }

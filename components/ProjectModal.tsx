@@ -6,6 +6,7 @@ import projectsData from '../data/projects.json';
 import { TechIcon } from './TechIcon';
 import { relativeTime } from '../lib/format';
 import { ProjectCover } from './ProjectCover';
+import { LanguageBar, swatch } from './LanguageBar';
 
 const PROJECTS = projectsData as Project[];
 
@@ -90,6 +91,17 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onC
                 </p>
 
                 <p className="mt-5 t-body text-mute">{project.description}</p>
+
+                <LanguageBar languages={project.languages} className="mt-6 h-2.5 gap-[3px] rounded-full" />
+                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5" aria-label="Languages">
+                  {project.languages.map((l) => (
+                    <li key={l.name} className="flex items-center gap-1.5 t-small">
+                      <span aria-hidden className="size-2 rounded-full" style={{ backgroundColor: swatch(l.name) }} />
+                      {l.name}
+                      <span className="tabular-nums text-mute">{l.percent}%</span>
+                    </li>
+                  ))}
+                </ul>
 
                 <ul className="mt-6 flex flex-wrap gap-2" aria-label="Stack">
                   {project.tech.map((t) => (
