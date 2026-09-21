@@ -13,7 +13,7 @@
     ],
     "language": "TypeScript",
     "stars": 4,
-    "updatedAt": "2026-09-13T18:20:10Z",
+    "updatedAt": "2026-09-18T09:09:25Z",
     "githubUrl": "https://github.com/vedantnimbarte/Arc",
     "homepageUrl": null,
     "topics": [
@@ -35,17 +35,17 @@
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 74.2
+        "percent": 72.1
       },
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 24.8
+        "percent": 26.8
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 1
+        "percent": 1.1
       }
     ],
     "private": false,
@@ -58,14 +58,14 @@
     "tech": [
       "Rust",
       "Cuda",
+      "Python",
       "cli",
       "deep-learning",
-      "gemma",
-      "gpt-2"
+      "gemma"
     ],
     "language": "Rust",
-    "stars": 2,
-    "updatedAt": "2026-09-13T20:13:31Z",
+    "stars": 3,
+    "updatedAt": "2026-09-19T11:15:24Z",
     "githubUrl": "https://github.com/vedantnimbarte/dlm",
     "homepageUrl": null,
     "topics": [
@@ -89,17 +89,17 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 93.3
+        "percent": 92.2
       },
       {
         "name": "Cuda",
         "color": "#3A4E3A",
-        "percent": 5.2
+        "percent": 5.6
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 1.4
+        "percent": 2.2
       }
     ],
     "private": false,
@@ -118,8 +118,8 @@
       "claude"
     ],
     "language": "Rust",
-    "stars": 2,
-    "updatedAt": "2026-09-13T18:18:50Z",
+    "stars": 3,
+    "updatedAt": "2026-09-18T20:37:23Z",
     "githubUrl": "https://github.com/vedantnimbarte/Wingman",
     "homepageUrl": null,
     "topics": [
@@ -143,22 +143,22 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 89.4
+        "percent": 90.9
       },
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 8.3
+        "percent": 7.1
       },
       {
         "name": "CSS",
         "color": "#663399",
-        "percent": 2
+        "percent": 1.5
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 0.3
+        "percent": 0.5
       }
     ],
     "private": false,
@@ -269,17 +269,17 @@
     "description": "A privacy-first, AI-native web browser with its own rendering engine, built from scratch in Rust",
     "tech": [
       "Rust",
+      "TypeScript",
       "Python",
       "ai",
       "browser-engine",
-      "css",
-      "from-scratch"
+      "css"
     ],
     "language": "Rust",
-    "stars": 1,
-    "updatedAt": "2026-09-13T18:20:11Z",
+    "stars": 2,
+    "updatedAt": "2026-09-19T12:29:58Z",
     "githubUrl": "https://github.com/vedantnimbarte/zero",
-    "homepageUrl": null,
+    "homepageUrl": "https://zero-two-mocha.vercel.app",
     "topics": [
       "ai",
       "browser-engine",
@@ -295,12 +295,22 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 99.7
+        "percent": 96
+      },
+      {
+        "name": "TypeScript",
+        "color": "#3178c6",
+        "percent": 2.1
+      },
+      {
+        "name": "CSS",
+        "color": "#663399",
+        "percent": 1.3
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 0.3
+        "percent": 0.6
       }
     ],
     "private": false,
@@ -320,7 +330,7 @@
     ],
     "language": "Rust",
     "stars": 2,
-    "updatedAt": "2026-09-13T18:20:11Z",
+    "updatedAt": "2026-09-17T10:28:42Z",
     "githubUrl": "https://github.com/vedantnimbarte/clifi",
     "homepageUrl": null,
     "topics": [
@@ -337,12 +347,12 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 97
+        "percent": 97.3
       },
       {
         "name": "Shell",
         "color": "#89e051",
-        "percent": 3
+        "percent": 2.7
       }
     ],
     "private": false,
@@ -362,7 +372,7 @@
     ],
     "language": "Rust",
     "stars": 3,
-    "updatedAt": "2026-09-13T18:18:49Z",
+    "updatedAt": "2026-09-19T11:58:00Z",
     "githubUrl": "https://github.com/vedantnimbarte/Echo",
     "homepageUrl": "https://echo-navy-xi.vercel.app",
     "topics": [
@@ -388,22 +398,27 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 68.3
+        "percent": 69.1
       },
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 28.2
+        "percent": 26.8
       },
       {
         "name": "CSS",
         "color": "#663399",
-        "percent": 1.5
+        "percent": 2.2
+      },
+      {
+        "name": "JavaScript",
+        "color": "#f1e05a",
+        "percent": 1.1
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 2
+        "percent": 0.9
       }
     ],
     "private": false,
