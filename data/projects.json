@@ -13,7 +13,7 @@
     ],
     "language": "TypeScript",
     "stars": 4,
-    "updatedAt": "2026-09-18T09:09:25Z",
+    "updatedAt": "2026-10-02T09:06:17Z",
     "githubUrl": "https://github.com/vedantnimbarte/Arc",
     "homepageUrl": null,
     "topics": [
@@ -35,17 +35,17 @@
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 72.1
+        "percent": 72.6
       },
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 26.8
+        "percent": 26.4
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 1.1
+        "percent": 1
       }
     ],
     "private": false,
