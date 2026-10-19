@@ -277,7 +277,7 @@
     ],
     "language": "Rust",
     "stars": 2,
-    "updatedAt": "2026-09-19T12:29:58Z",
+    "updatedAt": "2026-10-17T12:35:44Z",
     "githubUrl": "https://github.com/vedantnimbarte/zero",
     "homepageUrl": "https://zero-two-mocha.vercel.app",
     "topics": [
@@ -295,7 +295,7 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 96
+        "percent": 96.1
       },
       {
         "name": "TypeScript",
@@ -305,7 +305,7 @@
       {
         "name": "CSS",
         "color": "#663399",
-        "percent": 1.3
+        "percent": 1.2
       },
       {
         "name": "Other",
