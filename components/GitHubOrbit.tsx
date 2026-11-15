@@ -65,10 +65,10 @@ const n = (v: number) => v.toLocaleString('en-US');
 const years = STATS.find((s) => s.label === 'Years Exp.')?.value ?? '';
 
 const CALLOUTS = [
-  { value: n(github.commits), label: 'commits to public repos', deg: 200, elbow: [256, 108], end: [186, 108], align: 'right' as const },
-  { value: n(github.pullRequests), label: `pull requests, ${n(github.mergedPullRequests)} merged`, deg: -38, elbow: [694, 52], end: [770, 52], align: 'left' as const },
-  { value: n(github.contributionsLastYear), label: 'contributions in the past year', deg: 148, elbow: [270, 384], end: [196, 384], align: 'right' as const },
-  { value: years, label: 'years shipping to production', deg: 16, elbow: [728, 318], end: [800, 318], align: 'left' as const, offGitHub: true },
+  { value: n(github.commits), label: 'public commits', deg: 200, elbow: [256, 108], end: [186, 108], align: 'right' as const },
+  { value: n(github.mergedPullRequests), label: 'pull requests merged', deg: -38, elbow: [694, 52], end: [770, 52], align: 'left' as const },
+  { value: n(github.contributionsLastYear), label: 'contributions this year', deg: 148, elbow: [270, 384], end: [196, 384], align: 'right' as const },
+  { value: years, label: 'years in production', deg: 16, elbow: [728, 318], end: [800, 318], align: 'left' as const, offGitHub: true },
 ];
 
 const STAGE_W = 980;
