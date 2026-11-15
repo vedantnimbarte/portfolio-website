@@ -130,6 +130,7 @@ export const GitHubOrbit: React.FC = () => {
             alt={`Illustrated portrait of ${HERO_DATA.name}`}
             width={460}
             height={460}
+            fetchPriority="high"
             className="absolute inset-[17%] h-[66%] w-[66%] rounded-full border-4 border-panel object-cover shadow-[0_20px_60px_-20px_rgba(20,110,245,0.6)]"
           />
 
@@ -154,7 +155,7 @@ export const GitHubOrbit: React.FC = () => {
                       className="relative block rounded-full bg-ink p-[4%] shadow-[0_12px_24px_-10px_rgba(0,0,0,0.8)] transition-transform duration-300 [transform:rotate(var(--rot))] group-hover:[transform:rotate(0deg)_scale(1.12)] group-focus-visible:[transform:rotate(0deg)_scale(1.12)]"
                       style={{ '--rot': `${s.rot}deg` } as React.CSSProperties}
                     >
-                      <img src={BADGES[`../assets/github/${a.slug}.png`]} alt="" className="block aspect-square w-full rounded-full" />
+                      <img src={BADGES[`../assets/github/${a.slug}.png`]} alt="" loading="lazy" decoding="async" fetchPriority="low" width={148} height={148} className="block aspect-square w-full rounded-full" />
                       {a.tier && (
                         <span className="absolute -bottom-1 -right-2 rounded-full bg-sun px-1.5 text-[10px] font-extrabold text-navy shadow">
                           {a.tier}

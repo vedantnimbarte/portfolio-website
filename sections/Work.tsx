@@ -69,7 +69,7 @@ const WorkCard: React.FC<{
     <motion.li
       ref={ref}
       style={pinned ? { rotateY, scale, transformPerspective: 1400 } : undefined}
-      className="flex w-[82vw] shrink-0 snap-center sm:w-[22rem] md:w-[clamp(18rem,44vh,26rem)]"
+      className="flex w-[82vw] shrink-0 snap-center sm:w-[22rem] md:w-[clamp(16rem,42vh,26rem)]"
     >
       {/* The card is a container, not a button, so it can hold the live-site
           link. The title button stretches an invisible hit area over the
@@ -195,7 +195,7 @@ export const FeaturedWorks: React.FC = () => {
     <section id="work" ref={section} aria-labelledby="work-title" className="relative" style={{ height }}>
       {/* overflow-clip, not hidden: a hidden box can still be scrolled by
           focus, which would fight the row's transform. */}
-      <div className={pinned ? 'sticky top-0 flex h-screen flex-col justify-center overflow-clip' : 'py-section'}>
+      <div className={pinned ? 'sticky top-0 flex h-screen flex-col justify-center overflow-clip pt-24' : 'py-section'}>
         <div className="shell flex w-full flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <Words id="work-title" text="What I’ve built" className="t-h2" />
           <p className="max-w-xs t-small text-mute">

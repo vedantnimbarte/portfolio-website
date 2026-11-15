@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { ScrollProgress } from './components/motion';
 import { SiteProvider, useSite } from './hooks/useSite';
-import { ProjectModal } from './components/ProjectModal';
-import { ChatWidget, CommandPalette } from './components/Assistant';
 import { Hero, Nav } from './sections/Hero';
 import { FeaturedWorks } from './sections/Work';
 import { Experience } from './sections/Experience';
@@ -13,6 +11,11 @@ import projectsData from './data/projects.json';
 import type { Project } from './types';
 
 const PROJECTS = projectsData as Project[];
+
+// Overlays aren't on the first screen, so they load in their own chunk.
+const ProjectModal = lazy(() => import('./components/ProjectModal').then((m) => ({ default: m.ProjectModal })));
+const ChatWidget = lazy(() => import('./components/Assistant').then((m) => ({ default: m.ChatWidget })));
+const CommandPalette = lazy(() => import('./components/Assistant').then((m) => ({ default: m.CommandPalette })));
 
 const Page: React.FC = () => {
   const { project, dispatch } = useSite();
@@ -51,6 +54,7 @@ const Page: React.FC = () => {
         <Contact />
       </main>
 
+      <Suspense fallback={null}>
       <ChatWidget />
       <CommandPalette />
       <ProjectModal
@@ -59,6 +63,7 @@ const Page: React.FC = () => {
         onClose={() => dispatch({ type: 'CLOSE_PROJECT' })}
         onNavigate={(name) => dispatch({ type: 'OPEN_PROJECT', name })}
       />
+      </Suspense>
     </MotionConfig>
   );
 };

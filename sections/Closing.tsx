@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { Linkedin, Mail } from 'lucide-react';
+import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { ArrowUp, Check, Copy, Github, Linkedin } from 'lucide-react';
 import { CONTACT, HERO_DATA } from '../constants';
 import { Marquee } from '../components/ui';
 import { useCinematic } from '../components/motion';
+import { goTo } from '../hooks/useSite';
 
 /* ----------------------------------------------------------------- bands */
 
@@ -47,6 +48,45 @@ const useLocalTime = () => {
   return time;
 };
 
+const social =
+  'flex items-center gap-2 rounded-full border border-line bg-panel/60 px-4 py-2.5 t-small transition-colors hover:border-ink';
+
+/** Copies the address; the label swaps to a confirmation for a moment. */
+const CopyEmail: React.FC = () => {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTACT.email);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Non-secure context or denied permission: fall back to the mail client.
+      window.location.href = `mailto:${CONTACT.email}`;
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      aria-label={copied ? 'Email address copied' : 'Copy email address'}
+      className="grid size-11 shrink-0 place-items-center rounded-full border border-line transition-colors hover:border-ink"
+    >
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={copied ? 'done' : 'copy'}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.18 }}
+          className={copied ? 'text-[#4ade80]' : undefined}
+        >
+          {copied ? <Check size={17} aria-hidden /> : <Copy size={17} aria-hidden />}
+        </motion.span>
+      </AnimatePresence>
+    </button>
+  );
+};
+
 export const Contact: React.FC = () => {
   const time = useLocalTime();
   const ok = useCinematic();
@@ -78,52 +118,55 @@ export const Contact: React.FC = () => {
         </motion.a>
       </div>
 
-      <div className="mx-auto mt-14 flex max-w-6xl flex-wrap items-center justify-center gap-3">
-        <a
-          href={`mailto:${CONTACT.email}`}
-          className="flex items-center gap-2 rounded-full border border-line bg-panel px-4 py-2.5 t-small transition-colors hover:border-blue"
-        >
-          <Mail size={15} className="text-sun" aria-hidden />
-          {CONTACT.email}
-        </a>
-        <a
-          href={CONTACT.linkedin}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 rounded-full border border-line bg-panel px-4 py-2.5 t-small transition-colors hover:border-blue"
-        >
-          <Linkedin size={15} className="text-sun" aria-hidden />
-          {CONTACT.linkedinHandle}
-        </a>
+      {/* The email is the call to action, so it's the largest thing here,
+          with a copy button for people who don't use a mail app. */}
+      <div className="mx-auto mt-16 flex max-w-3xl flex-col items-center text-center">
+        <p className="flex items-center gap-2 t-small text-mute">
+          <span aria-hidden className="size-2 rounded-full bg-[#4ade80] shadow-[0_0_10px_#4ade80]" />
+          Open to full-time, contract and consulting work
+        </p>
+
+        <div className="mt-6 flex max-w-full flex-wrap items-center justify-center gap-3">
+          <a
+            href={`mailto:${CONTACT.email}`}
+            className="min-w-0 text-[clamp(1.25rem,3.6vw,2.25rem)] font-extrabold leading-tight tracking-[-0.02em] underline decoration-line decoration-2 underline-offset-[0.25em] transition-colors [font-variation-settings:'wdth'_108] hover:decoration-sun"
+          >
+            {/* Wraps only after the @, never mid-word. */}
+            {CONTACT.email.split('@')[0]}@<wbr />{CONTACT.email.split('@')[1]}
+          </a>
+          <CopyEmail />
+        </div>
+
+        <ul className="mt-8 flex flex-wrap justify-center gap-3">
+          <li>
+            <a href={CONTACT.linkedin} target="_blank" rel="noreferrer" className={social}>
+              <Linkedin size={15} aria-hidden />
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a href={CONTACT.github} target="_blank" rel="noreferrer" className={social}>
+              <Github size={15} aria-hidden />
+              GitHub
+            </a>
+          </li>
+        </ul>
+
+        <p className="mt-8 t-small text-mute">
+          It&apos;s <span className="tabular-nums text-ink">{time}</span> in {CONTACT.location.split(',')[0]}, India.
+        </p>
       </div>
 
-      <p className="mx-auto mt-10 max-w-6xl text-center t-small text-mute sm:text-right">
-        Available for full-time, contract and consulting work.{' '}
-        <a href={`mailto:${CONTACT.email}`} className="font-semibold text-sun underline-offset-4 hover:underline">
-          Let&apos;s chat
-        </a>
-      </p>
-
-      <footer className="mx-auto mt-24 grid max-w-6xl grid-cols-2 gap-8 border-t border-line py-10 t-small sm:grid-cols-3">
-        <div>
-          <p className="text-mute">Made by</p>
-          <p className="mt-1">{HERO_DATA.name}</p>
-          <p className="mt-1 text-mute">© {new Date().getFullYear()}</p>
-        </div>
-        <div>
-          <p className="text-mute">Local time</p>
-          <p className="mt-1">
-            {CONTACT.location.split(',')[0]} <span className="tabular-nums">{time}</span>
-          </p>
-        </div>
-        <div>
-          <p className="text-mute">Socials</p>
-          <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-            <li><a href={CONTACT.linkedin} target="_blank" rel="noreferrer" className="hover:text-sun">LinkedIn</a></li>
-            <li><a href={CONTACT.github} target="_blank" rel="noreferrer" className="hover:text-sun">GitHub</a></li>
-            <li><a href={`mailto:${CONTACT.email}`} className="hover:text-sun">Email</a></li>
-          </ul>
-        </div>
+      <footer className="mx-auto mt-24 flex max-w-6xl flex-wrap items-center justify-between gap-4 border-t border-line pb-28 pt-8 t-small text-mute">
+        <p>© {new Date().getFullYear()} {HERO_DATA.name}</p>
+        <button
+          type="button"
+          onClick={() => goTo('home')}
+          className="group flex items-center gap-2 rounded-full border border-line px-4 py-2 transition-colors hover:border-ink hover:text-ink"
+        >
+          Back to top
+          <ArrowUp size={14} aria-hidden className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+        </button>
       </footer>
     </section>
   );

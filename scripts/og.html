@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+  Social preview card (public/og.png, 1200x630), in the site's own type and
+  colour. Regenerate after changing it, from the repo root:
+
+  "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --hide-scrollbars ^
+    --window-size=1200,630 --virtual-time-budget=5000 --screenshot=public\og.png scripts\og.html
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@88..118,400..800&display=block" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    font-family: "Archivo", sans-serif;
+    color: #fff;
+    background:
+      radial-gradient(60% 70% at 78% 40%, rgba(20, 110, 245, 0.32), transparent 70%),
+      radial-gradient(50% 60% at 0% 100%, rgba(91, 75, 219, 0.18), transparent 70%),
+      #0d1526;
+    padding: 72px 80px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    align-items: center;
+    gap: 48px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .who { display: flex; align-items: center; gap: 14px; font-size: 22px; font-weight: 600; }
+  .pill { background: #146ef5; border-radius: 999px; padding: 4px 12px; font-size: 15px; font-weight: 600; }
+  h1 {
+    margin-top: 34px;
+    font-size: 64px;
+    line-height: 0.98;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    font-variation-settings: "wdth" 112;
+  }
+  .line { margin-top: 26px; font-size: 25px; color: #93a0ba; }
+  .proof { margin-top: 40px; display: flex; align-items: center; gap: 12px; font-size: 20px; color: #93a0ba; }
+  .proof b { color: #fff; font-weight: 600; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #ffd84a; box-shadow: 0 0 14px rgba(255, 216, 74, 0.8); }
+  .art { position: relative; width: 360px; height: 360px; }
+  .ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, #2a6ff0 0 1.2deg, transparent 1.2deg 5deg);
+    -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%, #000 70%, transparent 71%);
+            mask: radial-gradient(circle, transparent 62%, #000 63%, #000 70%, transparent 71%);
+    opacity: 0.9;
+  }
+  .art img {
+    position: absolute; inset: 17%; width: 66%; height: 66%;
+    border-radius: 50%; object-fit: cover; border: 5px solid #131d33;
+    box-shadow: 0 24px 70px -20px rgba(20, 110, 245, 0.8);
+  }
+  .url { position: absolute; right: 80px; bottom: 44px; font-size: 18px; color: #93a0ba; }
+</style>
+</head>
+<body>
+  <main>
+    <div class="who">Vedant Nimbarte <span class="pill">Open to work</span></div>
+    <h1>Full stack developer with a background in systems</h1>
+    <p class="line">Cloud, AI and Rust, shipped to production.</p>
+    <p class="proof"><span class="dot"></span><span>Senior engineer at <b>Cloudairy</b>, 10k+ users a day</span></p>
+  </main>
+  <div class="art">
+    <div class="ring"></div>
+    <img src="../assets/profile.jpg" alt="" />
+  </div>
+  <span class="url">vedantnimbarte.com</span>
+</body>
+</html>
