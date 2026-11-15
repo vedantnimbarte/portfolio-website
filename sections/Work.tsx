@@ -9,11 +9,10 @@ import { ProjectCover } from '../components/ProjectCover';
 import { LanguageBar, swatch } from '../components/LanguageBar';
 import { Pill } from '../components/ui';
 import { useSite } from '../hooks/useSite';
-import { Rise, Tilt, Words, useCinematic, useMediaQuery } from '../components/motion';
+import { Words, useCinematic, useMediaQuery } from '../components/motion';
 
 const PROJECTS = projectsData as Project[];
-const FEATURED = PROJECTS.slice(0, 6);
-const SIDE = PROJECTS.slice(6);
+const FEATURED = 6; // the first six get full cards; the rest follow, smaller
 
 // Whole percents, except where rounding would misstate: <1%, and 99.7% not 100%.
 const share = (v: number) => (v < 1 ? '<1%' : v > 99 && v < 100 ? `${v.toFixed(1)}%` : `${Math.round(v)}%`);
@@ -24,16 +23,24 @@ const CATEGORY: Record<Project['category'], string> = {
   apps: 'Desktop and web apps',
 };
 
-/* ---------------------------------------------------------------- featured
-   A pinned coverflow. The section is as tall as the row is wide; scrolling
-   down slides the row left, and each card turns on its vertical axis by how
-   far it sits from the centre of the screen. Below md, or with reduced
-   motion, it is a plain swipeable row. The language bar runs across every
-   card as the divider between cover and text. */
+/* ---------------------------------------------------------------------------
+   One row for every project, pinned as a coverflow. The section is as tall as
+   the row is wide; scrolling down slides the row left, and each card turns on
+   its vertical axis by how far it sits from the centre of the screen. Clicking
+   a card at the edge brings it to the centre first; clicking the centred card
+   opens it. Below md, or with reduced motion, it is a plain swipeable row. */
 
 const TURN = 28; // degrees at the screen edge
 
-const WorkCard: React.FC<{ project: Project; x: MotionValue<number>; pinned: boolean }> = ({ project: p, x, pinned }) => {
+type Centre = (el: HTMLElement) => boolean;
+
+const WorkCard: React.FC<{
+  project: Project;
+  x: MotionValue<number>;
+  pinned: boolean;
+  compact: boolean;
+  centre: Centre;
+}> = ({ project: p, x, pinned, compact, centre }) => {
   const { dispatch } = useSite();
   const ref = useRef<HTMLLIElement>(null);
   // offsetLeft is the untransformed position, so adding the row's x gives
@@ -41,55 +48,78 @@ const WorkCard: React.FC<{ project: Project; x: MotionValue<number>; pinned: boo
   const rotateY = useTransform(x, (xv) => {
     const el = ref.current;
     if (!el || !pinned) return 0;
-    const centre = el.offsetLeft + el.offsetWidth / 2 + xv;
-    const d = (centre - window.innerWidth / 2) / window.innerWidth;
+    const mid = el.offsetLeft + el.offsetWidth / 2 + xv;
+    const d = (mid - window.innerWidth / 2) / window.innerWidth;
     return Math.max(-1, Math.min(1, d)) * -TURN;
   });
   const scale = useTransform(rotateY, (r) => 1 - (Math.abs(r) / TURN) * 0.1);
+
+  const onClick = (e: React.MouseEvent) => {
+    // detail is 0 for keyboard activation; focus already centred the card.
+    if (e.detail !== 0 && ref.current && centre(ref.current)) return;
+    dispatch({ type: 'OPEN_PROJECT', name: p.name });
+  };
+  const onFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+    if (ref.current && e.currentTarget.matches(':focus-visible')) centre(ref.current);
+  };
 
   return (
     <motion.li
       ref={ref}
       style={pinned ? { rotateY, scale, transformPerspective: 1400 } : undefined}
-      className="w-[82vw] shrink-0 snap-center sm:w-[22rem] md:w-[clamp(18rem,44vh,27rem)]"
+      className={`shrink-0 snap-center ${
+        compact
+          ? 'w-[64vw] sm:w-[17rem] md:w-[clamp(14rem,32vh,19rem)]'
+          : 'w-[82vw] sm:w-[22rem] md:w-[clamp(18rem,44vh,27rem)]'
+      }`}
     >
       <button
         type="button"
-        onClick={() => dispatch({ type: 'OPEN_PROJECT', name: p.name })}
+        onClick={onClick}
+        onFocus={onFocus}
         className="card sheen group block w-full overflow-hidden text-left transition-colors duration-300 hover:border-blue/70"
       >
         <span className="relative block aspect-[4/3] overflow-hidden">
           <span className="block h-full transition-transform duration-700 ease-out group-hover:scale-[1.05]">
-            <ProjectCover project={p} index={PROJECTS.indexOf(p)} />
+            <ProjectCover project={p} index={PROJECTS.indexOf(p)} compact={compact} />
           </span>
           <span className="absolute left-3 top-3 rounded-full bg-navy/85 px-2.5 py-1 text-[11px] font-semibold backdrop-blur">
             {CATEGORY[p.category]}
           </span>
-          <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-navy/85 px-2.5 py-1 text-[11px] font-semibold backdrop-blur">
-            <Star size={11} className="text-sun" aria-hidden />
-            {p.stars}
-            <span className="sr-only"> stars</span>
-          </span>
+          {!compact && (
+            <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-navy/85 px-2.5 py-1 text-[11px] font-semibold backdrop-blur">
+              <Star size={11} className="text-sun" aria-hidden />
+              {p.stars}
+              <span className="sr-only"> stars</span>
+            </span>
+          )}
         </span>
 
         <LanguageBar languages={p.languages} className="h-1.5" />
 
-        <span className="block p-6">
-          <span className="flex items-baseline justify-between gap-3">
-            <span className="t-h3">{p.title}</span>
-            <span className="shrink-0 text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
+        {compact ? (
+          <span className="block p-4">
+            <span className="t-h3 block">{p.title}</span>
+            <span className="mt-1 block text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
           </span>
-          <span className="mt-2 line-clamp-2 t-small text-mute">{p.description}</span>
-          <span className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
-            {p.languages.map((l) => (
-              <span key={l.name} className="flex items-center gap-1.5 text-xs">
-                <span aria-hidden className="size-2 rounded-full" style={{ backgroundColor: swatch(l.name) }} />
-                {l.name}
-                <span className="tabular-nums text-mute">{share(l.percent)}</span>
-              </span>
-            ))}
+        ) : (
+          <span className="block p-6">
+            <span className="flex items-baseline justify-between gap-3">
+              <span className="t-h3">{p.title}</span>
+              <span className="shrink-0 text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
+            </span>
+            <span className="mt-2 line-clamp-2 t-small text-mute">{p.description}</span>
+            <span className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
+              {p.languages.map((l) => (
+                <span key={l.name} className="flex items-center gap-1.5 text-xs">
+                  <span aria-hidden className="size-2 rounded-full" style={{ backgroundColor: swatch(l.name) }} />
+                  {l.name}
+                  <span className="tabular-nums text-mute">{share(l.percent)}</span>
+                </span>
+              ))}
+            </span>
           </span>
-        </span>
+        )}
       </button>
     </motion.li>
   );
@@ -132,25 +162,39 @@ export const FeaturedWorks: React.FC = () => {
   const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end end'] });
   const x = useTransform([scrollYProgress, distance], ([p, d]: number[]) => -p * d);
 
+  // Scrolls the page so the card sits mid-screen. Returns false when it is
+  // already as central as the row allows, so the caller can open it instead.
+  const centre: Centre = (el) => {
+    const s = section.current;
+    if (!pinned || !s) return false;
+    const shift = el.offsetLeft + el.offsetWidth / 2 - window.innerWidth / 2;
+    const top = s.offsetTop + Math.max(0, Math.min(distance.get(), shift));
+    if (Math.abs(top - window.scrollY) < window.innerWidth * 0.12) return false;
+    window.scrollTo({ top });
+    return true;
+  };
+
   return (
     <section id="work" ref={section} aria-labelledby="work-title" className="relative" style={{ height }}>
-      <div className={pinned ? 'sticky top-0 flex h-screen flex-col justify-center overflow-hidden' : 'py-section'}>
+      {/* overflow-clip, not hidden: a hidden box can still be scrolled by
+          focus, which would fight the row's transform. */}
+      <div className={pinned ? 'sticky top-0 flex h-screen flex-col justify-center overflow-clip' : 'py-section'}>
         <div className="shell flex w-full flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <Words id="work-title" text="Selected work" className="t-h2" />
+          <Words id="work-title" text="What I’ve built" className="t-h2" />
           <p className="max-w-xs t-small text-mute">
-            {FEATURED.length} projects from GitHub, most recently updated first. Open one for the details.
+            {PROJECTS.length} projects from GitHub, most recently updated first. Open one for the details.
           </p>
         </div>
 
         <motion.ul
           ref={track}
           style={pinned ? { x, paddingInline: GUTTER } : { paddingInline: GUTTER, scrollPaddingInline: GUTTER }}
-          className={`mt-10 flex gap-6 lg:gap-8 ${pinned ? 'w-max py-6' : 'snap-x snap-mandatory overflow-x-auto pb-4 scrollbar-hide'}`}
+          className={`mt-10 flex items-center gap-6 lg:gap-8 ${pinned ? 'w-max py-6' : 'snap-x snap-mandatory overflow-x-auto pb-4 scrollbar-hide'}`}
         >
-          {FEATURED.map((p) => (
-            <WorkCard key={p.name} project={p} x={x} pinned={pinned} />
+          {PROJECTS.map((p, i) => (
+            <WorkCard key={p.name} project={p} x={x} pinned={pinned} compact={i >= FEATURED} centre={centre} />
           ))}
-          <li className="flex w-[70vw] shrink-0 snap-center items-center justify-center sm:w-[18rem]">
+          <li className="flex w-[64vw] shrink-0 snap-center items-center justify-center sm:w-[17rem]">
             <Pill href={CONTACT.github} target="_blank" rel="noreferrer">
               See everything on GitHub
             </Pill>
@@ -168,41 +212,3 @@ export const FeaturedWorks: React.FC = () => {
     </section>
   );
 };
-
-/* ------------------------------------------------------------ side projects */
-
-const SideCard: React.FC<{ project: Project }> = ({ project }) => {
-  const { dispatch } = useSite();
-  return (
-    <Tilt className="h-full" inner="rounded-[1.25rem]">
-      <button
-        type="button"
-        onClick={() => dispatch({ type: 'OPEN_PROJECT', name: project.name })}
-        className="card sheen group block h-full w-full p-2.5 text-left transition-colors hover:border-blue/60"
-      >
-        <div className="aspect-[4/3] overflow-hidden rounded-xl">
-          <div className="h-full transition-transform duration-500 group-hover:scale-[1.03]">
-            <ProjectCover project={project} index={PROJECTS.indexOf(project)} compact />
-          </div>
-        </div>
-        <div className="px-1.5 pb-1.5 pt-3">
-          <p className="text-[11px] text-mute">{CATEGORY[project.category]}</p>
-          <h3 className="mt-1 t-body font-semibold">{project.title}</h3>
-        </div>
-      </button>
-    </Tilt>
-  );
-};
-
-export const SideProjects: React.FC = () => (
-  <section aria-labelledby="side-title" className="shell py-section">
-    <Words id="side-title" text="Side projects" className="t-h2" />
-    <ul className="mt-14 grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-6">
-      {SIDE.map((p, i) => (
-        <Rise as="li" key={p.name} delay={(i % 4) * 0.08}>
-          <SideCard project={p} />
-        </Rise>
-      ))}
-    </ul>
-  </section>
-);

@@ -56,7 +56,7 @@ const wordChild = {
 
 export const Words: React.FC<{
   text: string;
-  as?: 'h1' | 'h2';
+  as?: 'h1' | 'h2' | 'h3';
   id?: string;
   className?: string;
   delay?: number;

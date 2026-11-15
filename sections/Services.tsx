@@ -1,7 +1,6 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { Bot, Box, Cloud, Cpu, Search, Settings, Sparkles } from 'lucide-react';
-import { CAPABILITIES, CONTACT } from '../constants';
+import React from 'react';
+import { Bot, Cpu, Database, Globe, Server, Sparkles } from 'lucide-react';
+import { CAPABILITIES } from '../constants';
 import { Pill } from '../components/ui';
 import { goTo } from '../hooks/useSite';
 import { Depth, Rise, Tilt, Words, useCinematic } from '../components/motion';
@@ -19,6 +18,33 @@ const GlossTile: React.FC<{ children: React.ReactNode; className?: string }> = (
   >
     {children}
   </span>
+);
+
+/* An isometric exploded view of a cloud deployment: edge, services and data
+   as stacked plates. Hovering the card pulls the plates apart. */
+const PLATES = [
+  { label: 'Data', icon: Database, z: 0, zh: 0, tone: 'from-[#1f4a92]/80 to-[#131d33]/80' },
+  { label: 'Services', icon: Server, z: 30, zh: 48, tone: 'from-plum/80 to-[#26324d]/80' },
+  { label: 'Edge', icon: Globe, z: 60, zh: 96, tone: 'from-blue/85 to-plum/70' },
+];
+
+const CloudStack: React.FC = () => (
+  <div aria-hidden className="relative mx-5 mb-5 h-56 overflow-hidden rounded-xl bg-[radial-gradient(70%_80%_at_50%_100%,#5b4bdb,#131d33_70%)]">
+    <Depth z={40} className="absolute inset-0 grid place-items-center [perspective:1000px]">
+      <div className="relative size-32 translate-y-6 [transform-style:preserve-3d] [transform:rotateX(58deg)_rotateZ(-42deg)]">
+        {PLATES.map(({ label, icon: Icon, z, zh, tone }) => (
+          <div
+            key={label}
+            style={{ '--z': `${z}px`, '--zh': `${zh}px` } as React.CSSProperties}
+            className={`absolute inset-0 flex items-end justify-between rounded-xl border border-white/20 bg-gradient-to-br p-3 shadow-[0_20px_30px_-10px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)] backdrop-blur-sm transition-transform duration-700 ease-out [transform:translateZ(var(--z))] group-hover/tilt:[transform:translateZ(var(--zh))] ${tone}`}
+          >
+            <span className="text-[11px] font-bold tracking-tight text-ink">{label}</span>
+            <Icon size={20} className="text-ink" />
+          </div>
+        ))}
+      </div>
+    </Depth>
+  </div>
 );
 
 const PIPELINE = `name: deploy
@@ -76,13 +102,7 @@ export const Services: React.FC = () => (
               <h3 className="t-h3">{CLOUD.title}</h3>
               <p className="mt-2 t-small text-mute">{CLOUD.description}</p>
             </div>
-            <div aria-hidden className="relative mx-5 mb-5 grid h-56 place-items-center overflow-hidden rounded-xl bg-[radial-gradient(70%_80%_at_50%_100%,#5b4bdb,#131d33_70%)]">
-              <Depth z={60}>
-                <GlossTile className="size-24 rotate-[-8deg]">
-                  <Cloud size={44} className="text-ink" />
-                </GlossTile>
-              </Depth>
-            </div>
+            <CloudStack />
           </article>
         </Tilt>
       </Rise>
@@ -121,75 +141,3 @@ export const Services: React.FC = () => (
     </div>
   </section>
 );
-
-/* ----------------------------------------------------------------- steps
-   A real sequence, so the cards stack: each one pins below the last, and
-   the ones underneath shrink back as the next slides over them. */
-
-const STEPS = [
-  {
-    title: 'Discovery',
-    icon: Search,
-    text: 'We agree on the problem, the users and the constraints before any code is written, so scope and cost are clear up front.',
-  },
-  {
-    title: 'Development',
-    icon: Settings,
-    text: 'I build in small, reviewable pieces with CI from day one, so you can see and test progress every week.',
-  },
-  {
-    title: 'Delivery',
-    icon: Box,
-    text: 'I deploy, set up monitoring and hand over documentation, so your team can run it without me.',
-  },
-];
-
-const Step: React.FC<{ step: (typeof STEPS)[number]; i: number; progress: MotionValue<number>; ok: boolean }> = ({
-  step: { title, icon: Icon, text }, i, progress, ok,
-}) => {
-  const n = STEPS.length;
-  const scale = useTransform(progress, [i / n, 1], [1, 1 - (n - 1 - i) * 0.06]);
-  const filter = useTransform(progress, [i / n, 1], [1, 1 - (n - 1 - i) * 0.25], { clamp: true });
-  const brightness = useTransform(filter, (v) => `brightness(${v})`);
-  return (
-    <li className="sticky" style={{ top: `calc(7rem + ${i * 1.75}rem)` }}>
-      <motion.div
-        style={ok ? { scale, filter: brightness } : undefined}
-        className="card sheen grid origin-top gap-6 p-3 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] md:items-center"
-      >
-        <div aria-hidden className="grid h-44 place-items-center rounded-xl bg-[radial-gradient(80%_90%_at_50%_100%,rgba(91,75,219,0.55),#0a1120_75%)] md:h-64">
-          <span className="grid size-24 place-items-center rounded-[1.6rem] bg-gradient-to-br from-[#8b7bff] via-plum to-blue shadow-[0_18px_40px_-10px_rgba(91,75,219,0.9),inset_0_2px_0_rgba(255,255,255,0.35)] [transform:perspective(600px)_rotateX(14deg)_rotateY(-16deg)]">
-            <Icon size={42} strokeWidth={2.2} className="text-ink drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]" />
-          </span>
-        </div>
-        <div className="px-4 pb-5 md:px-8 md:pb-0">
-          <p className="t-small font-semibold text-sun">Step {i + 1} of {n}</p>
-          <h3 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">{title}</h3>
-          <p className="mt-3 max-w-md t-body text-mute">{text}</p>
-        </div>
-      </motion.div>
-    </li>
-  );
-};
-
-export const Process: React.FC = () => {
-  const ok = useCinematic();
-  const ref = useRef<HTMLOListElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 15%', 'end end'] });
-
-  return (
-    <section aria-labelledby="steps-title" className="shell py-section">
-      <Words id="steps-title" text="Three steps to a shipped product" className="t-h2 max-w-2xl" />
-
-      <ol ref={ref} className="mt-16 space-y-[18vh] pb-[6vh]">
-        {STEPS.map((s, i) => (
-          <Step key={s.title} step={s} i={i} progress={scrollYProgress} ok={ok} />
-        ))}
-      </ol>
-
-      <div className="mt-16 text-center">
-        <Pill href={`mailto:${CONTACT.email}`}>Get started</Pill>
-      </div>
-    </section>
-  );
-};

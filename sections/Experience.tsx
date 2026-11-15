@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
-import { EXPERIENCE_DATA } from '../constants';
+import React, { useRef, useState } from 'react';
+import { AnimatePresence, motion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
+import { Activity, Sparkles, Users, Zap } from 'lucide-react';
+import { EXPERIENCE_DATA, STATS } from '../constants';
 import { Pill } from '../components/ui';
 import { goTo } from '../hooks/useSite';
-import { EASE, Rise, Words, useCinematic } from '../components/motion';
+import { EASE, Rise, Words, useCinematic, useMediaQuery } from '../components/motion';
 
 /* ===========================================================================
    Experience as a career timeline. A ribbon across the top sizes each role by
@@ -83,6 +84,123 @@ const withFigures = (text: string) =>
   text.split(FIGURE).map((part, i) =>
     i % 2 ? <strong key={i} className="font-semibold text-ink">{part}</strong> : part
   );
+
+/* ---------------------------------------------------------------- numbers
+   Closes the timeline: the current role's production figures fan out as
+   they scroll in, each from constants.ts. */
+
+const stat = (label: string) => STATS.find((s) => s.label === label)?.value ?? '';
+
+const CARDS = [
+  { value: stat('Daily Users'), label: 'Daily users', note: 'On MERN apps I architected', icon: Users },
+  { value: stat('System Uptime'), label: 'Uptime', note: 'Across those same systems', icon: Activity },
+  { value: stat('AI Ops/Mo'), label: 'OpenAI calls a month', note: 'Powering generative features', icon: Sparkles },
+  { value: '40%', label: 'Faster API responses', note: 'From indexing and caching', icon: Zap },
+];
+
+const FAN = [
+  { rot: -12, y: 28, bg: '#146ef5', ink: '#ffffff', sub: 'rgba(255,255,255,0.72)' },
+  { rot: -4, y: 4, bg: '#1f8a5b', ink: '#ffffff', sub: 'rgba(255,255,255,0.72)' },
+  { rot: 4, y: 4, bg: '#f3f5fa', ink: '#0d1526', sub: '#5b6780' },
+  { rot: 12, y: 28, bg: '#ffd84a', ink: '#0d1526', sub: '#5b5222' },
+];
+
+const CARD_STEP = 192; // md card width (13rem) minus the 1rem overlap
+
+const FanCard: React.FC<{ c: (typeof CARDS)[number]; i: number; open: MotionValue<number>; fan: boolean }> = ({ c, i, open, fan }) => {
+  const f = FAN[i];
+  const toCentre = ((CARDS.length - 1) / 2 - i) * CARD_STEP;
+  const x = useTransform(open, [0, 1], [toCentre, 0]);
+  const y = useTransform(open, [0, 1], [60, f.y]);
+  const rotate = useTransform(open, [0, 1], [i * 3 - 4, f.rot]);
+  return (
+    <motion.li
+      style={fan ? { x, y, rotate, zIndex: i } : undefined}
+      className="group md:w-52 md:shrink-0"
+    >
+      <div
+        className="flex aspect-[3/4] flex-col justify-between rounded-2xl p-5 shadow-[0_40px_60px_-24px_rgba(0,0,0,0.7)] transition-transform duration-300 group-hover:-translate-y-4"
+        style={{ backgroundColor: f.bg, color: f.ink }}
+      >
+        <c.icon size={24} aria-hidden style={{ color: f.sub }} />
+        <span>
+          <span className="block text-4xl font-bold leading-none tracking-tight sm:text-5xl">{c.value}</span>
+          <span className="mt-2 block t-body font-semibold">{c.label}</span>
+          <span className="mt-1 block text-xs" style={{ color: f.sub }}>{c.note}</span>
+        </span>
+      </div>
+    </motion.li>
+  );
+};
+
+export const Numbers: React.FC = () => {
+  const ref = useRef<HTMLUListElement>(null);
+  const wide = useMediaQuery('(min-width: 768px)');
+  const fan = useCinematic() && wide;
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center 55%'] });
+
+  return (
+    <div aria-labelledby="numbers-title" role="group" className="mt-section">
+      <Words as="h3" id="numbers-title" text={`${EXPERIENCE_DATA[0].company}, in numbers`} className="t-h2 mx-auto max-w-xl text-center" />
+
+      <ul ref={ref} className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 md:flex md:justify-center md:gap-0 md:-space-x-4">
+        {CARDS.map((c, i) => (
+          <FanCard key={c.label} c={c} i={i} open={scrollYProgress} fan={fan} />
+        ))}
+      </ul>
+
+      <p className="mx-auto mt-20 max-w-md text-center t-small text-mute">
+        Measured on production systems at {EXPERIENCE_DATA[0].company}, {EXPERIENCE_DATA[0].period.replace('–', 'to')}.
+      </p>
+    </div>
+  );
+};
+
+/* The current role shows everything. Older roles lead with their top two
+   highlights and fold the rest away, so the timeline scans quickly. */
+const PREVIEW = 2;
+
+const Highlights: React.FC<{ role: (typeof ROLES)[number] }> = ({ role: r }) => {
+  const [open, setOpen] = useState(r.current);
+  const more = r.highlights.length - PREVIEW;
+  const shown = open ? r.highlights : r.highlights.slice(0, PREVIEW);
+  const listId = `${r.id}-highlights`;
+
+  return (
+    <>
+      <ul id={listId} className="mt-5">
+        <AnimatePresence initial={false}>
+          {shown.map((h, i) => (
+            <motion.li
+              key={h}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.45, ease: EASE, delay: open && i >= PREVIEW ? (i - PREVIEW) * 0.05 : 0 }}
+              className="overflow-hidden"
+            >
+              <span className={`flex gap-3 t-small text-mute ${i ? 'pt-2.5' : ''}`}>
+                <span aria-hidden className="mt-[7px] size-1.5 shrink-0 rounded-full" style={{ backgroundColor: r.color.bg }} />
+                <span>{withFigures(h)}</span>
+              </span>
+            </motion.li>
+          ))}
+        </AnimatePresence>
+      </ul>
+      {!r.current && more > 0 && (
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={listId}
+          onClick={() => setOpen(!open)}
+          className="mt-4 rounded-full t-small font-semibold text-sun underline-offset-4 hover:underline"
+        >
+          {open ? 'Show less' : `Show ${more} more`}
+        </button>
+      )}
+    </>
+  );
+};
 
 export const Experience: React.FC = () => {
   const ok = useCinematic();
@@ -184,18 +302,13 @@ export const Experience: React.FC = () => {
               )}
             </header>
 
-            <ul className="mt-5 space-y-2.5">
-              {r.highlights.map((h) => (
-                <li key={h} className="flex gap-3 t-small text-mute">
-                  <span aria-hidden className="mt-[7px] size-1.5 shrink-0 rounded-full" style={{ backgroundColor: r.color.bg }} />
-                  <span>{withFigures(h)}</span>
-                </li>
-              ))}
-            </ul>
+            <Highlights role={r} />
           </article>
         </Rise>
       ))}
     </ol>
+
+    <Numbers />
 
     <div className="mt-16 text-center">
       <Pill href="#contact" onClick={(e) => { e.preventDefault(); goTo('contact'); }}>

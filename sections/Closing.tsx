@@ -1,83 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { Activity, Linkedin, Mail, Sparkles, Users, Zap } from 'lucide-react';
-import { CONTACT, EXPERIENCE_DATA, HERO_DATA, STATS } from '../constants';
+import { Linkedin, Mail } from 'lucide-react';
+import { CONTACT, HERO_DATA } from '../constants';
 import { Marquee } from '../components/ui';
-import { Words, useCinematic, useMediaQuery } from '../components/motion';
-
-/* ---------------------------------------------------------------- numbers
-   The reference fans out certificates. There are none to show, so the fan
-   holds Cloudairy production figures, each from constants.ts. Years of
-   experience lives in the hero, so it isn't repeated here. */
-
-const stat = (label: string) => STATS.find((s) => s.label === label)?.value ?? '';
-
-const CARDS = [
-  { value: stat('Daily Users'), label: 'Daily users', note: 'On MERN apps I architected', icon: Users },
-  { value: stat('System Uptime'), label: 'Uptime', note: 'Across those same systems', icon: Activity },
-  { value: stat('AI Ops/Mo'), label: 'OpenAI calls a month', note: 'Powering generative features', icon: Sparkles },
-  { value: '40%', label: 'Faster API responses', note: 'From indexing and caching', icon: Zap },
-];
-
-const FAN = [
-  { rot: -12, y: 28, bg: '#146ef5', ink: '#ffffff', sub: 'rgba(255,255,255,0.72)' },
-  { rot: -4, y: 4, bg: '#1f8a5b', ink: '#ffffff', sub: 'rgba(255,255,255,0.72)' },
-  { rot: 4, y: 4, bg: '#f3f5fa', ink: '#0d1526', sub: '#5b6780' },
-  { rot: 12, y: 28, bg: '#ffd84a', ink: '#0d1526', sub: '#5b5222' },
-];
-
-const CARD_STEP = 192; // md card width (13rem) minus the 1rem overlap
-
-const FanCard: React.FC<{ c: (typeof CARDS)[number]; i: number; open: MotionValue<number>; fan: boolean }> = ({ c, i, open, fan }) => {
-  const f = FAN[i];
-  const toCentre = ((CARDS.length - 1) / 2 - i) * CARD_STEP;
-  const x = useTransform(open, [0, 1], [toCentre, 0]);
-  const y = useTransform(open, [0, 1], [60, f.y]);
-  const rotate = useTransform(open, [0, 1], [i * 3 - 4, f.rot]);
-  return (
-    <motion.li
-      style={fan ? { x, y, rotate, zIndex: i } : undefined}
-      className="group md:w-52 md:shrink-0"
-    >
-      <div
-        className="flex aspect-[3/4] flex-col justify-between rounded-2xl p-5 shadow-[0_40px_60px_-24px_rgba(0,0,0,0.7)] transition-transform duration-300 group-hover:-translate-y-4"
-        style={{ backgroundColor: f.bg, color: f.ink }}
-      >
-        <c.icon size={24} aria-hidden style={{ color: f.sub }} />
-        <span>
-          <span className="block text-4xl font-bold leading-none tracking-tight sm:text-5xl">{c.value}</span>
-          <span className="mt-2 block t-body font-semibold">{c.label}</span>
-          <span className="mt-1 block text-xs" style={{ color: f.sub }}>{c.note}</span>
-        </span>
-      </div>
-    </motion.li>
-  );
-};
-
-export const Numbers: React.FC = () => {
-  const ref = useRef<HTMLUListElement>(null);
-  const wide = useMediaQuery('(min-width: 768px)');
-  const fan = useCinematic() && wide;
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center 55%'] });
-
-  return (
-    <section aria-labelledby="numbers-title" className="overflow-hidden py-section">
-      <div className="shell">
-        <Words id="numbers-title" text="Numbers from production" className="t-h2 mx-auto max-w-xl text-center" />
-      </div>
-
-      <ul ref={ref} className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 px-5 md:flex md:justify-center md:gap-0 md:-space-x-4 md:px-0">
-        {CARDS.map((c, i) => (
-          <FanCard key={c.label} c={c} i={i} open={scrollYProgress} fan={fan} />
-        ))}
-      </ul>
-
-      <p className="mx-auto mt-20 max-w-md px-5 text-center t-small text-mute">
-        Measured on production systems at {EXPERIENCE_DATA[0].company}, {EXPERIENCE_DATA[0].period.replace('–', 'to')}.
-      </p>
-    </section>
-  );
-};
+import { useCinematic } from '../components/motion';
 
 /* ----------------------------------------------------------------- bands */
 

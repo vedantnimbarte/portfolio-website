@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion';
 import type { SectionId } from '../types';
-import { CONTACT, HERO_DATA, SKILLS_DATA } from '../constants';
+import { CONTACT, EXPERIENCE_DATA, HERO_DATA, SKILLS_DATA, STATS } from '../constants';
 import portrait from '../assets/profile.jpg';
 import { TechIcon } from '../components/TechIcon';
 import { GitHubOrbit } from '../components/GitHubOrbit';
@@ -87,6 +87,8 @@ export const Nav: React.FC = () => {
 };
 
 const SKILLS = SKILLS_DATA.flatMap((c) => c.skills);
+const NOW = EXPERIENCE_DATA[0];
+const USERS = STATS.find((s) => s.label === 'Daily Users')?.value;
 
 /* The page's orchestrated moment: the headline flips up word by word, then
    the orbit sweeps in. Scrolling away tips the orbit back into the page. */
@@ -150,6 +152,14 @@ export const Hero: React.FC = () => {
           <Pill href="#work" onClick={jump('work')}>
             View my work
           </Pill>
+          {/* Proof before the scroll: where now, and at what scale. */}
+          <p className="mt-6 flex items-center justify-center gap-2 t-small text-mute">
+            <span aria-hidden className="size-2 rounded-full bg-sun shadow-[0_0_12px_rgba(255,216,74,0.8)]" />
+            <span>
+              {NOW.role} at <span className="font-semibold text-ink">{NOW.company}</span>
+              {USERS && <>, on systems serving {USERS} users a day</>}
+            </span>
+          </p>
         </motion.div>
       </motion.div>
 
