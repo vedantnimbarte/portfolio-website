@@ -8,10 +8,17 @@ import { SUGGESTED } from '../lib/knowledge';
 import { SiteCommand, filterCommands, looksLikeQuestion } from '../lib/commands';
 import { goTo, useSite } from '../hooks/useSite';
 import { useTypewriter } from '../hooks/useTypewriter';
+import { useModalLayer } from '../hooks/useModalLayer';
 import portrait from '../assets/profile.jpg';
 
 const chip =
-  'flex items-center gap-1.5 rounded-full border border-line bg-deep px-3 py-1.5 text-xs text-mute transition-colors hover:border-blue hover:text-ink';
+  'flex items-center gap-1.5 rounded-full border border-line bg-deep/60 px-3 py-1.5 text-xs text-mute transition-colors hover:border-ink hover:text-ink';
+
+// Shared surface for the floating panels: glass over the page, one radius.
+const glass =
+  'rounded-[1.5rem] border border-white/10 bg-navy/85 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl';
+
+const SPRING = { type: 'spring', stiffness: 420, damping: 34 } as const;
 
 /* -------------------------------------------------------------------------- */
 
@@ -61,7 +68,7 @@ const Reply: React.FC<{ answer: Answer; skip: boolean }> = ({ answer, skip }) =>
   const parts = shown.split('\n\n');
 
   return (
-    <div aria-busy={!done} className="max-w-[92%] rounded-2xl rounded-bl-md bg-panel px-4 py-3">
+    <div aria-busy={!done} className="max-w-[92%] rounded-2xl rounded-bl-md border border-line/70 bg-panel/80 px-4 py-3">
       <div aria-hidden className="space-y-3">
         {answer.entries.map((entry, i) => {
           const text = parts[i];
@@ -121,44 +128,65 @@ export const ChatWidget: React.FC = () => {
           <motion.div
             role="dialog"
             aria-label="Ask about Vedant"
-            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            initial={{ opacity: 0, y: 24, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: 16, scale: 0.95, transition: { duration: 0.15 } }}
+            transition={SPRING}
             onKeyDown={(e) => e.key === 'Escape' && close()}
-            className="card fixed bottom-24 right-4 z-[150] flex h-[min(540px,calc(100dvh-8rem))] w-[min(380px,calc(100vw-2rem))] origin-bottom-right flex-col overflow-hidden shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)] sm:right-6"
+            className={`fixed bottom-24 right-4 z-[150] flex h-[min(560px,calc(100dvh-8rem))] w-[min(390px,calc(100vw-2rem))] origin-bottom-right flex-col overflow-hidden sm:right-6 ${glass}`}
           >
-            <div className="flex items-center gap-3 border-b border-line px-4 py-3">
-              <img src={portrait} alt="" className="size-9 rounded-full object-cover" />
+            <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
+              <img src={portrait} alt="" className="size-10 rounded-full object-cover ring-2 ring-sun/80" />
               <div className="min-w-0 flex-1">
                 <p className="t-small font-semibold">Ask about Vedant</p>
                 <p className="text-[11px] text-mute">Answers from this site only, no AI model</p>
               </div>
-              <button type="button" onClick={close} aria-label="Close chat" className="grid size-8 place-items-center rounded-full text-mute hover:bg-deep hover:text-ink">
+              <button type="button" onClick={close} aria-label="Close chat" className="grid size-9 place-items-center rounded-full border border-white/10 text-mute transition-[color,transform] duration-300 hover:rotate-90 hover:text-ink">
                 <X size={16} aria-hidden />
               </button>
             </div>
 
-            <div ref={logRef} role="log" aria-live="polite" className="flex-1 space-y-3 overflow-y-auto p-4">
-              {log.map((m, i) =>
-                m.role === 'visitor' ? (
-                  <p key={m.id} className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-blue px-4 py-2.5 t-small">
-                    {m.text}
-                  </p>
-                ) : (
-                  <Reply key={m.id} answer={m.answer!} skip={i < log.length - 1} />
-                )
-              )}
+            <div ref={logRef} role="log" aria-live="polite" className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-5 py-4">
+              {log.map((m, i) => (
+                // Each message settles up from the input, the way it was sent.
+                <motion.div
+                  key={m.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className={m.role === 'visitor' ? 'flex justify-end' : undefined}
+                >
+                  {m.role === 'visitor' ? (
+                    <p className="w-fit max-w-[85%] rounded-2xl rounded-br-md bg-blue px-4 py-2.5 t-small">{m.text}</p>
+                  ) : (
+                    <Reply answer={m.answer!} skip={i < log.length - 1} />
+                  )}
+                </motion.div>
+              ))}
               {log.length <= 1 && (
-                <div className="flex flex-wrap gap-1.5 pt-1">
+                <motion.div
+                  initial="hidden"
+                  animate="show"
+                  variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05, delayChildren: 0.25 } } }}
+                  className="flex flex-wrap gap-1.5 pt-1"
+                >
                   {SUGGESTED.map((s) => (
-                    <button key={s} type="button" onClick={() => ask(s)} className={chip}>{s}</button>
+                    <motion.button
+                      key={s}
+                      type="button"
+                      variants={{ hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0 } }}
+                      onClick={() => ask(s)}
+                      className={chip}
+                    >
+                      {s}
+                    </motion.button>
                   ))}
-                </div>
+                </motion.div>
               )}
             </div>
 
-            <form onSubmit={submit} className="flex items-center gap-2 border-t border-line p-3">
+            <form onSubmit={submit} className="border-t border-white/10 p-3">
+              <div className="flex items-center gap-2 rounded-full border border-line bg-deep/70 py-1.5 pl-4 pr-1.5 transition-colors focus-within:border-blue">
               <label htmlFor={inputId} className="sr-only">Your question</label>
               <input
                 id={inputId}
@@ -167,11 +195,12 @@ export const ChatWidget: React.FC = () => {
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Ask about his work, stack or availability"
                 autoComplete="off"
-                className="min-w-0 flex-1 rounded-full bg-deep px-4 py-2.5 t-small placeholder:text-mute focus:outline-none focus-visible:ring-2 focus-visible:ring-blue"
+                className="min-w-0 flex-1 bg-transparent py-1.5 t-small placeholder:text-mute focus:outline-none"
               />
-              <button type="submit" aria-label="Send" disabled={!text.trim()} className="grid size-10 shrink-0 place-items-center rounded-full bg-blue transition-opacity disabled:opacity-40">
-                <ArrowUp size={17} aria-hidden />
+              <button type="submit" aria-label="Send" disabled={!text.trim()} className="grid size-9 shrink-0 place-items-center rounded-full bg-blue transition-[opacity,transform] duration-200 enabled:hover:-translate-y-0.5 disabled:opacity-35">
+                <ArrowUp size={16} aria-hidden />
               </button>
+              </div>
             </form>
           </motion.div>
         )}
@@ -182,9 +211,22 @@ export const ChatWidget: React.FC = () => {
         type="button"
         aria-expanded={chat}
         onClick={() => dispatch({ type: 'CHAT', open: !chat })}
-        className="fixed bottom-5 right-4 z-[150] flex items-center gap-2 rounded-full bg-blue py-3 pl-3.5 pr-3.5 font-semibold shadow-[0_12px_30px_-8px_rgba(20,110,245,0.8)] transition-colors hover:bg-[#2a7dff] sm:right-6 sm:pr-5"
+        className="fixed bottom-5 right-4 z-[150] flex items-center gap-2 rounded-full bg-blue py-3 pl-3.5 pr-3.5 font-semibold shadow-[0_12px_30px_-8px_rgba(20,110,245,0.8)] transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-[#2a7dff] sm:right-6 sm:pr-5"
       >
-        {chat ? <X size={20} aria-hidden /> : <MessageCircle size={20} aria-hidden />}
+        <span className="relative grid size-5 place-items-center">
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.span
+              key={chat ? 'x' : 'chat'}
+              initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
+              transition={{ duration: 0.2 }}
+              className="grid place-items-center"
+            >
+              {chat ? <X size={20} aria-hidden /> : <MessageCircle size={20} aria-hidden />}
+            </motion.span>
+          </AnimatePresence>
+        </span>
         <span className="t-small max-sm:sr-only">{chat ? 'Close' : 'Ask about me'}</span>
       </button>
     </>
@@ -193,6 +235,34 @@ export const ChatWidget: React.FC = () => {
 
 /* -------------------------------------------------------------------------- */
 
+const Kbd: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <kbd className="grid min-w-5 place-items-center rounded-md border border-white/10 bg-deep px-1 py-0.5 font-sans text-[10px] text-ink">{children}</kbd>
+);
+
+/** A palette option. The highlight behind the active row is one shared
+ *  element that glides from row to row as the selection moves. */
+const Row: React.FC<{ id: string; on: boolean; onHover: () => void; onPick: () => void; children: React.ReactNode }> = ({
+  id, on, onHover, onPick, children,
+}) => (
+  <li
+    id={id}
+    role="option"
+    aria-selected={on}
+    onMouseMove={onHover}
+    onClick={onPick}
+    className={`relative flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 t-small transition-colors ${on ? 'text-ink' : 'text-mute'}`}
+  >
+    {on && (
+      <motion.span
+        layoutId="palette-active"
+        transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+        className="absolute inset-0 rounded-xl border border-blue/50 bg-blue/15"
+      />
+    )}
+    <span className="relative flex min-w-0 flex-1 items-center gap-3">{children}</span>
+  </li>
+);
+
 export const CommandPalette: React.FC = () => {
   const { palette, dispatch, ask } = useSite();
   const [text, setText] = useState('');
@@ -200,6 +270,7 @@ export const CommandPalette: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   const listId = useId();
+  useModalLayer(palette);
 
   const results = useMemo(() => filterCommands(text), [text]);
   const asking = text.trim().length > 0 && (results.length === 0 || looksLikeQuestion(text));
@@ -251,15 +322,25 @@ export const CommandPalette: React.FC = () => {
     <AnimatePresence>
       {palette && (
         <motion.div
+          data-layer
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.12 }}
-          className="fixed inset-0 z-[250] flex items-start justify-center bg-deep/80 p-4 pt-[14vh] backdrop-blur-sm"
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-[250] flex items-start justify-center bg-deep/75 p-4 pt-[14vh] backdrop-blur-md"
           onMouseDown={(e) => e.target === e.currentTarget && close()}
         >
-          <div role="dialog" aria-modal="true" aria-label="Search the site" className="card w-full max-w-lg overflow-hidden shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)]">
-            <div className="flex items-center gap-3 border-b border-line px-4">
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search the site"
+            initial={{ opacity: 0, y: -12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.97, transition: { duration: 0.12 } }}
+            transition={SPRING}
+            className={`w-full max-w-xl overflow-hidden ${glass}`}
+          >
+            <div className="flex items-center gap-3 border-b border-white/10 px-5">
               <Search size={17} className="text-mute" aria-hidden />
               <input
                 ref={inputRef}
@@ -273,43 +354,36 @@ export const CommandPalette: React.FC = () => {
                 onChange={(e) => { setText(e.target.value); setActive(0); }}
                 onKeyDown={onKeyDown}
                 placeholder="Jump to a section or project, or ask a question"
-                className="w-full bg-transparent py-4 t-body placeholder:text-mute focus:outline-none"
+                className="w-full bg-transparent py-5 t-body placeholder:text-mute focus:outline-none"
               />
-              <kbd className="rounded bg-deep px-1.5 py-0.5 font-sans text-[11px] text-mute">Esc</kbd>
             </div>
 
-            <ul id={listId} role="listbox" className="max-h-[50vh] overflow-y-auto p-2">
+            <ul id={listId} role="listbox" className="max-h-[50vh] overflow-y-auto overscroll-contain p-2">
               {results.map((c, i) => (
-                <li
-                  key={c.id}
-                  id={`${listId}-${i}`}
-                  role="option"
-                  aria-selected={i === active}
-                  onMouseMove={() => setActive(i)}
-                  onClick={() => run(c)}
-                  className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 t-small ${i === active ? 'bg-blue text-ink' : 'text-mute'}`}
-                >
+                <Row key={c.id} id={`${listId}-${i}`} on={i === active} onHover={() => setActive(i)} onPick={() => run(c)}>
                   <c.icon size={15} aria-hidden />
-                  <span className={i === active ? '' : 'text-ink'}>{c.label}</span>
-                  {c.hint && <span className="ml-auto text-xs opacity-70">{c.hint}</span>}
-                </li>
+                  <span className="truncate text-ink">{c.label}</span>
+                  {c.hint && <span className="ml-auto shrink-0 text-xs text-mute">{c.hint}</span>}
+                </Row>
               ))}
               {asking && (
-                <li
-                  id={`${listId}-${results.length}`}
-                  role="option"
-                  aria-selected={active === results.length}
-                  onMouseMove={() => setActive(results.length)}
-                  onClick={() => ask(text)}
-                  className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 t-small ${active === results.length ? 'bg-blue text-ink' : 'text-mute'}`}
-                >
+                <Row id={`${listId}-${results.length}`} on={active === results.length} onHover={() => setActive(results.length)} onPick={() => ask(text)}>
                   <MessageCircle size={15} aria-hidden />
-                  <span className="truncate">Ask: &ldquo;{text}&rdquo;</span>
-                  <CornerDownLeft size={13} className="ml-auto shrink-0" aria-hidden />
-                </li>
+                  <span className="truncate text-ink">Ask: &ldquo;{text}&rdquo;</span>
+                  <CornerDownLeft size={13} className="ml-auto shrink-0 text-mute" aria-hidden />
+                </Row>
+              )}
+              {total === 0 && (
+                <li className="px-3 py-6 text-center t-small text-mute">Type a section, a project or a question.</li>
               )}
             </ul>
-          </div>
+
+            <div aria-hidden className="flex items-center gap-4 border-t border-white/10 px-5 py-3 text-[11px] text-mute">
+              <span className="flex items-center gap-1.5"><Kbd>↑</Kbd><Kbd>↓</Kbd> move</span>
+              <span className="flex items-center gap-1.5"><Kbd>↵</Kbd> open</span>
+              <span className="flex items-center gap-1.5"><Kbd>esc</Kbd> close</span>
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

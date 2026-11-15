@@ -166,6 +166,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
   body {
     background-color: var(--color-navy);

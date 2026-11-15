@@ -8,6 +8,7 @@ import { relativeTime } from '../lib/format';
 import { ProjectCover } from './ProjectCover';
 import { swatch } from './LanguageBar';
 import { EASE } from './motion';
+import { useModalLayer } from '../hooks/useModalLayer';
 
 const PROJECTS = projectsData as Project[];
 
@@ -173,6 +174,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onC
   const panelRef = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   const [dir, setDir] = useState(0);
+  useModalLayer(isOpen && Boolean(project));
 
   const i = project ? PROJECTS.findIndex((p) => p.name === project.name) : -1;
   const n = PROJECTS.length;
@@ -216,6 +218,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onC
         <>
           <motion.div
             key="scrim"
+            data-layer
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -224,7 +227,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onC
             className="fixed inset-0 z-[200] bg-deep/80 backdrop-blur-md"
           />
 
-          <div key="frame" className="pointer-events-none fixed inset-0 z-[201] flex items-center justify-center p-3 sm:p-6">
+          <div key="frame" data-layer className="pointer-events-none fixed inset-0 z-[201] flex items-center justify-center p-3 sm:p-6">
             <motion.div
               ref={panelRef}
               role="dialog"

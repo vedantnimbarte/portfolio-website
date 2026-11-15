@@ -28,9 +28,21 @@ export const Nav: React.FC = () => {
   const { dispatch } = useSite();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
+  const [current, setCurrent] = useState<SectionId | null>(null);
   useMotionValueEvent(scrollY, 'change', (y) => {
     const prev = scrollY.getPrevious() ?? 0;
     setHidden(y > prev && y > 240);
+
+    // The current section is the last one whose top has passed 40% down the
+    // screen; at the very bottom it's Contact, which may never get that high.
+    const line = window.innerHeight * 0.4;
+    let at: SectionId | null = null;
+    for (const l of LINKS) {
+      const top = document.getElementById(l.id)?.getBoundingClientRect().top;
+      if (top !== undefined && top <= line) at = l.id;
+    }
+    if (window.innerHeight + y >= document.documentElement.scrollHeight - 2) at = 'contact';
+    setCurrent(at);
   });
 
   return (
@@ -58,9 +70,18 @@ export const Nav: React.FC = () => {
                 <a
                   href={`#${l.id}`}
                   onClick={jump(l.id)}
-                  className="rounded-full px-3.5 py-2 t-small text-mute transition-colors hover:bg-panel hover:text-ink"
+                  aria-current={current === l.id ? 'location' : undefined}
+                  className={`relative block rounded-full px-3.5 py-2 t-small transition-colors hover:text-ink ${current === l.id ? 'text-ink' : 'text-mute'}`}
                 >
-                  {l.label}
+                  {/* One marker that glides to whichever section you're in. */}
+                  {current === l.id && (
+                    <motion.span
+                      layoutId="nav-current"
+                      transition={{ type: 'spring', stiffness: 400, damping: 34 }}
+                      className="absolute inset-0 rounded-full border border-white/10 bg-white/[0.07]"
+                    />
+                  )}
+                  <span className="relative">{l.label}</span>
                 </a>
               </li>
             ))}
