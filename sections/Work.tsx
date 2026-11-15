@@ -1,18 +1,17 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { Star } from 'lucide-react';
+import { ArrowUpRight, Star } from 'lucide-react';
 import { motion, useMotionValue, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import type { Project } from '../types';
 import projectsData from '../data/projects.json';
 import { CONTACT } from '../constants';
 import { relativeTime } from '../lib/format';
-import { ProjectCover } from '../components/ProjectCover';
+import { ProjectCover, coverColor } from '../components/ProjectCover';
 import { LanguageBar, swatch } from '../components/LanguageBar';
 import { Pill } from '../components/ui';
 import { useSite } from '../hooks/useSite';
 import { Words, useCinematic, useMediaQuery } from '../components/motion';
 
 const PROJECTS = projectsData as Project[];
-const FEATURED = 6; // the first six get full cards; the rest follow, smaller
 
 // Whole percents, except where rounding would misstate: <1%, and 99.7% not 100%.
 const share = (v: number) => (v < 1 ? '<1%' : v > 99 && v < 100 ? `${v.toFixed(1)}%` : `${Math.round(v)}%`);
@@ -26,7 +25,8 @@ const CATEGORY: Record<Project['category'], string> = {
 /* ---------------------------------------------------------------------------
    One row for every project, pinned as a coverflow. The section is as tall as
    the row is wide; scrolling down slides the row left, and each card turns on
-   its vertical axis by how far it sits from the centre of the screen. Clicking
+   its vertical axis by how far it sits from the centre of the screen. Every
+   card is the same size, and each glows in its cover colour on hover. Clicking
    a card at the edge brings it to the centre first; clicking the centred card
    opens it. Below md, or with reduced motion, it is a plain swipeable row. */
 
@@ -38,11 +38,11 @@ const WorkCard: React.FC<{
   project: Project;
   x: MotionValue<number>;
   pinned: boolean;
-  compact: boolean;
   centre: Centre;
-}> = ({ project: p, x, pinned, compact, centre }) => {
+}> = ({ project: p, x, pinned, centre }) => {
   const { dispatch } = useSite();
   const ref = useRef<HTMLLIElement>(null);
+  const index = PROJECTS.indexOf(p);
   // offsetLeft is the untransformed position, so adding the row's x gives
   // where the card is on screen right now.
   const rotateY = useTransform(x, (xv) => {
@@ -63,54 +63,40 @@ const WorkCard: React.FC<{
     if (ref.current && e.currentTarget.matches(':focus-visible')) centre(ref.current);
   };
 
+  const langs = p.languages.filter((l) => l.name !== 'Other').slice(0, 3);
+
   return (
     <motion.li
       ref={ref}
       style={pinned ? { rotateY, scale, transformPerspective: 1400 } : undefined}
-      className={`shrink-0 snap-center ${
-        compact
-          ? 'w-[64vw] sm:w-[17rem] md:w-[clamp(14rem,32vh,19rem)]'
-          : 'w-[82vw] sm:w-[22rem] md:w-[clamp(18rem,44vh,27rem)]'
-      }`}
+      className="flex w-[82vw] shrink-0 snap-center sm:w-[22rem] md:w-[clamp(18rem,44vh,26rem)]"
     >
       <button
         type="button"
         onClick={onClick}
         onFocus={onFocus}
-        className="card sheen group block w-full overflow-hidden text-left transition-colors duration-300 hover:border-blue/70"
+        style={{ '--accent': coverColor(index) } as React.CSSProperties}
+        className="card sheen group relative flex w-full flex-col overflow-hidden text-left transition-[border-color,box-shadow] duration-500 hover:border-[var(--accent)] hover:shadow-[0_40px_80px_-36px_var(--accent)]"
       >
-        <span className="relative block aspect-[4/3] overflow-hidden">
-          <span className="block h-full transition-transform duration-700 ease-out group-hover:scale-[1.05]">
-            <ProjectCover project={p} index={PROJECTS.indexOf(p)} compact={compact} />
-          </span>
-          <span className="absolute left-3 top-3 rounded-full bg-navy/85 px-2.5 py-1 text-[11px] font-semibold backdrop-blur">
+        <span className="relative block aspect-[4/3] w-full shrink-0 overflow-hidden">
+          <ProjectCover project={p} index={index} />
+          <span className="absolute left-3 top-3 rounded-full border border-white/15 bg-navy/75 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md">
             {CATEGORY[p.category]}
           </span>
-          {!compact && (
-            <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-navy/85 px-2.5 py-1 text-[11px] font-semibold backdrop-blur">
-              <Star size={11} className="text-sun" aria-hidden />
-              {p.stars}
-              <span className="sr-only"> stars</span>
-            </span>
-          )}
         </span>
 
-        <LanguageBar languages={p.languages} className="h-1.5" />
+        <LanguageBar languages={p.languages} className="h-1.5 shrink-0" />
 
-        {compact ? (
-          <span className="block p-4">
-            <span className="t-h3 block">{p.title}</span>
-            <span className="mt-1 block text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
+        <span className="flex flex-1 flex-col bg-[linear-gradient(180deg,var(--color-panel),var(--color-deep))] p-6">
+          <span className="text-[1.6rem] font-extrabold leading-none tracking-[-0.03em] [font-variation-settings:'wdth'_112]">
+            {p.title}
           </span>
-        ) : (
-          <span className="block p-6">
-            <span className="flex items-baseline justify-between gap-3">
-              <span className="t-h3">{p.title}</span>
-              <span className="shrink-0 text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
-            </span>
-            <span className="mt-2 line-clamp-2 t-small text-mute">{p.description}</span>
-            <span className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
-              {p.languages.map((l) => (
+          <span className="mt-2 text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
+          <span className="mb-5 mt-4 line-clamp-2 t-small text-mute">{p.description}</span>
+
+          <span className="mt-auto flex items-center justify-between gap-3 border-t border-line/70 pt-4">
+            <span className="flex min-w-0 flex-wrap gap-x-3.5 gap-y-1">
+              {langs.map((l) => (
                 <span key={l.name} className="flex items-center gap-1.5 text-xs">
                   <span aria-hidden className="size-2 rounded-full" style={{ backgroundColor: swatch(l.name) }} />
                   {l.name}
@@ -118,8 +104,18 @@ const WorkCard: React.FC<{
                 </span>
               ))}
             </span>
+            <span className="flex shrink-0 items-center gap-3">
+              <span className="flex items-center gap-1 text-xs font-semibold">
+                <Star size={12} className="fill-sun text-sun" aria-hidden />
+                {p.stars}
+                <span className="sr-only"> stars</span>
+              </span>
+              <span aria-hidden className="grid size-8 place-items-center rounded-full bg-blue text-ink transition-transform duration-300 group-hover:rotate-45">
+                <ArrowUpRight size={15} />
+              </span>
+            </span>
           </span>
-        )}
+        </span>
       </button>
     </motion.li>
   );
@@ -189,12 +185,12 @@ export const FeaturedWorks: React.FC = () => {
         <motion.ul
           ref={track}
           style={pinned ? { x, paddingInline: GUTTER } : { paddingInline: GUTTER, scrollPaddingInline: GUTTER }}
-          className={`mt-10 flex items-center gap-6 lg:gap-8 ${pinned ? 'w-max py-6' : 'snap-x snap-mandatory overflow-x-auto pb-4 scrollbar-hide'}`}
+          className={`mt-10 flex gap-6 lg:gap-8 ${pinned ? 'w-max py-6' : 'snap-x snap-mandatory overflow-x-auto pb-4 scrollbar-hide'}`}
         >
-          {PROJECTS.map((p, i) => (
-            <WorkCard key={p.name} project={p} x={x} pinned={pinned} compact={i >= FEATURED} centre={centre} />
+          {PROJECTS.map((p) => (
+            <WorkCard key={p.name} project={p} x={x} pinned={pinned} centre={centre} />
           ))}
-          <li className="flex w-[64vw] shrink-0 snap-center items-center justify-center sm:w-[17rem]">
+          <li className="flex w-[64vw] shrink-0 snap-center items-center justify-center sm:w-[16rem]">
             <Pill href={CONTACT.github} target="_blank" rel="noreferrer">
               See everything on GitHub
             </Pill>

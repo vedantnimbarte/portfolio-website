@@ -145,6 +145,18 @@
   50% { transform: translateY(-6px); }
 }
 
+/* ------------------------------------------------------------ cover tilt
+   Project mockups lean back into the cover like a device on a desk, and
+   straighten toward the viewer when their card is hovered. */
+@utility cover-tilt {
+  transform: perspective(1000px) rotateX(18deg) rotateY(-14deg) rotateZ(3deg);
+  transform-origin: 50% 0;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  .group:hover & {
+    transform: perspective(1000px) rotateX(6deg) rotateY(-4deg) rotateZ(1deg) translateY(-3%);
+  }
+}
+
 @utility scrollbar-hide {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }

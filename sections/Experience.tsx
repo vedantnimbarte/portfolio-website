@@ -284,7 +284,10 @@ export const Experience: React.FC = () => {
             </p>
           </div>
 
-          <article className="card sheen p-6 sm:p-8">
+          <article
+            className="card sheen p-6 sm:p-8"
+            style={{ backgroundImage: `radial-gradient(70% 60% at 0% 0%, ${r.color.bg}1f, transparent 70%)` }}
+          >
             <header className="flex items-start gap-3">
               <span
                 aria-hidden

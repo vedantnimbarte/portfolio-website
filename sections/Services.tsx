@@ -66,7 +66,7 @@ export const Services: React.FC = () => (
       </Pill>
     </div>
 
-    <div className="mt-16 grid gap-6 md:grid-cols-2 lg:gap-8">
+    <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
       {/* AI, the wide card */}
       <Rise className="md:col-span-2">
         <Tilt inner="rounded-[1.25rem]" max={5}>
