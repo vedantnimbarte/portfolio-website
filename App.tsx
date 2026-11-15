@@ -57,6 +57,7 @@ const Page: React.FC = () => {
         project={PROJECTS.find((p) => p.name === project) ?? null}
         isOpen={Boolean(project)}
         onClose={() => dispatch({ type: 'CLOSE_PROJECT' })}
+        onNavigate={(name) => dispatch({ type: 'OPEN_PROJECT', name })}
       />
     </MotionConfig>
   );

@@ -13,7 +13,7 @@
     ],
     "language": "TypeScript",
     "stars": 4,
-    "updatedAt": "2026-10-02T09:06:17Z",
+    "updatedAt": "2026-11-11T13:58:52Z",
     "githubUrl": "https://github.com/vedantnimbarte/Arc",
     "homepageUrl": null,
     "topics": [
@@ -35,12 +35,12 @@
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 72.6
+        "percent": 73.2
       },
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 26.4
+        "percent": 25.8
       },
       {
         "name": "Other",
@@ -49,6 +49,15 @@
       }
     ],
     "private": false,
+    "commits": 395,
+    "forks": 0,
+    "createdAt": "2026-05-15T13:06:34Z",
+    "pushedAt": "2026-11-11T13:40:41Z",
+    "license": "MIT",
+    "release": {
+      "tag": "v0.18.0",
+      "publishedAt": "2026-11-11T13:56:28Z"
+    },
     "category": "apps"
   },
   {
@@ -65,9 +74,9 @@
     ],
     "language": "Rust",
     "stars": 3,
-    "updatedAt": "2026-09-19T11:15:24Z",
+    "updatedAt": "2026-11-13T08:41:10Z",
     "githubUrl": "https://github.com/vedantnimbarte/dlm",
-    "homepageUrl": null,
+    "homepageUrl": "https://dlm-frontend.vercel.app",
     "topics": [
       "cli",
       "deep-learning",
@@ -89,20 +98,29 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 92.2
+        "percent": 85.5
       },
       {
         "name": "Cuda",
         "color": "#3A4E3A",
-        "percent": 5.6
+        "percent": 12.7
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 2.2
+        "percent": 1.8
       }
     ],
     "private": false,
+    "commits": 497,
+    "forks": 0,
+    "createdAt": "2026-07-02T11:28:03Z",
+    "pushedAt": "2026-11-12T18:31:23Z",
+    "license": "Apache-2.0",
+    "release": {
+      "tag": "v0.4.1",
+      "publishedAt": "2026-11-12T16:42:06Z"
+    },
     "category": "ai"
   },
   {
@@ -119,9 +137,9 @@
     ],
     "language": "Rust",
     "stars": 3,
-    "updatedAt": "2026-09-18T20:37:23Z",
+    "updatedAt": "2026-11-07T09:13:55Z",
     "githubUrl": "https://github.com/vedantnimbarte/Wingman",
-    "homepageUrl": null,
+    "homepageUrl": "https://wingman-frontend-phi.vercel.app/",
     "topics": [
       "ai",
       "ai-agent",
@@ -143,17 +161,17 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 90.9
+        "percent": 87.5
       },
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 7.1
+        "percent": 9.5
       },
       {
         "name": "CSS",
         "color": "#663399",
-        "percent": 1.5
+        "percent": 2.6
       },
       {
         "name": "Other",
@@ -162,6 +180,15 @@
       }
     ],
     "private": false,
+    "commits": 642,
+    "forks": 1,
+    "createdAt": "2026-05-26T12:46:45Z",
+    "pushedAt": "2026-11-13T23:47:04Z",
+    "license": "Apache-2.0",
+    "release": {
+      "tag": "v0.5.0",
+      "publishedAt": "2026-09-17T20:18:31Z"
+    },
     "category": "ai"
   },
   {
@@ -177,10 +204,10 @@
       "llm"
     ],
     "language": "Python",
-    "stars": 2,
-    "updatedAt": "2026-08-30T12:36:22Z",
+    "stars": 1,
+    "updatedAt": "2026-11-07T11:05:31Z",
     "githubUrl": "https://github.com/vedantnimbarte/kortex-memory",
-    "homepageUrl": "https://github.com/vedantnimbarte/kortex-memory#readme",
+    "homepageUrl": null,
     "topics": [
       "ai-agents",
       "claude-code",
@@ -212,7 +239,13 @@
         "percent": 2.1
       }
     ],
-    "private": false,
+    "private": true,
+    "commits": 95,
+    "forks": 0,
+    "createdAt": "2026-05-08T13:34:38Z",
+    "pushedAt": "2026-08-30T12:34:05Z",
+    "license": "Apache-2.0",
+    "release": null,
     "category": "ai"
   },
   {
@@ -228,8 +261,8 @@
       "penetration-testing"
     ],
     "language": "Python",
-    "stars": 2,
-    "updatedAt": "2026-09-13T18:20:11Z",
+    "stars": 1,
+    "updatedAt": "2026-11-07T13:08:47Z",
     "githubUrl": "https://github.com/vedantnimbarte/Aegis",
     "homepageUrl": null,
     "topics": [
@@ -247,20 +280,26 @@
       {
         "name": "Python",
         "color": "#3572A5",
-        "percent": 68.3
+        "percent": 69.2
       },
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 30.7
+        "percent": 29.3
       },
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 1
+        "percent": 1.5
       }
     ],
-    "private": false,
+    "private": true,
+    "commits": 150,
+    "forks": 0,
+    "createdAt": "2026-07-03T12:14:40Z",
+    "pushedAt": "2026-11-07T13:08:42Z",
+    "license": null,
+    "release": null,
     "category": "ai"
   },
   {
@@ -314,6 +353,12 @@
       }
     ],
     "private": false,
+    "commits": 246,
+    "forks": 1,
+    "createdAt": "2026-07-20T21:00:49Z",
+    "pushedAt": "2026-10-19T17:28:41Z",
+    "license": "Apache-2.0",
+    "release": null,
     "category": "systems"
   },
   {
@@ -356,6 +401,15 @@
       }
     ],
     "private": false,
+    "commits": 23,
+    "forks": 0,
+    "createdAt": "2026-07-06T18:10:50Z",
+    "pushedAt": "2026-09-17T10:28:38Z",
+    "license": "MIT",
+    "release": {
+      "tag": "v0.1.0",
+      "publishedAt": "2026-07-06T19:08:12Z"
+    },
     "category": "systems"
   },
   {
@@ -365,16 +419,16 @@
     "tech": [
       "Rust",
       "TypeScript",
+      "Python",
       "cross-platform",
       "deepgram",
-      "desktop-app",
-      "dictation"
+      "desktop-app"
     ],
     "language": "Rust",
-    "stars": 3,
-    "updatedAt": "2026-09-19T11:58:00Z",
+    "stars": 1,
+    "updatedAt": "2026-11-11T10:50:55Z",
     "githubUrl": "https://github.com/vedantnimbarte/Echo",
-    "homepageUrl": "https://echo-navy-xi.vercel.app",
+    "homepageUrl": "https://www.sayecho.app/",
     "topics": [
       "cross-platform",
       "deepgram",
@@ -398,17 +452,17 @@
       {
         "name": "Rust",
         "color": "#dea584",
-        "percent": 69.1
+        "percent": 68.6
       },
       {
         "name": "TypeScript",
         "color": "#3178c6",
-        "percent": 26.8
+        "percent": 27.4
       },
       {
         "name": "CSS",
         "color": "#663399",
-        "percent": 2.2
+        "percent": 1.6
       },
       {
         "name": "JavaScript",
@@ -418,10 +472,16 @@
       {
         "name": "Other",
         "color": "#8b949e",
-        "percent": 0.9
+        "percent": 1.4
       }
     ],
-    "private": false,
+    "private": true,
+    "commits": 345,
+    "forks": 0,
+    "createdAt": "2026-06-05T12:53:50Z",
+    "pushedAt": "2026-11-11T09:50:49Z",
+    "license": null,
+    "release": null,
     "category": "apps"
   },
   {
@@ -479,6 +539,12 @@
       }
     ],
     "private": false,
+    "commits": 17,
+    "forks": 0,
+    "createdAt": "2026-05-26T07:05:57Z",
+    "pushedAt": "2026-07-11T12:32:10Z",
+    "license": "Apache-2.0",
+    "release": null,
     "category": "apps"
   },
   {
@@ -531,6 +597,12 @@
       }
     ],
     "private": false,
+    "commits": 25,
+    "forks": 0,
+    "createdAt": "2026-06-02T11:24:33Z",
+    "pushedAt": "2026-09-13T18:19:11Z",
+    "license": "MIT",
+    "release": null,
     "category": "ai"
   }
 ]

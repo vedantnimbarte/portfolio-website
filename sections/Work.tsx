@@ -59,7 +59,7 @@ const WorkCard: React.FC<{
     if (e.detail !== 0 && ref.current && centre(ref.current)) return;
     dispatch({ type: 'OPEN_PROJECT', name: p.name });
   };
-  const onFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+  const onFocus = (e: React.FocusEvent<HTMLElement>) => {
     if (ref.current && e.currentTarget.matches(':focus-visible')) centre(ref.current);
   };
 
@@ -71,12 +71,13 @@ const WorkCard: React.FC<{
       style={pinned ? { rotateY, scale, transformPerspective: 1400 } : undefined}
       className="flex w-[82vw] shrink-0 snap-center sm:w-[22rem] md:w-[clamp(18rem,44vh,26rem)]"
     >
-      <button
-        type="button"
-        onClick={onClick}
-        onFocus={onFocus}
+      {/* The card is a container, not a button, so it can hold the live-site
+          link. The title button stretches an invisible hit area over the
+          whole card; the link sits above it. */}
+      <div
+        data-project={p.name}
         style={{ '--accent': coverColor(index) } as React.CSSProperties}
-        className="card sheen group relative flex w-full flex-col overflow-hidden text-left transition-[border-color,box-shadow] duration-500 hover:border-[var(--accent)] hover:shadow-[0_40px_80px_-36px_var(--accent)]"
+        className="card sheen group relative flex w-full flex-col overflow-hidden text-left transition-[border-color,box-shadow] duration-500 hover:border-[var(--accent)] hover:shadow-[0_40px_80px_-36px_var(--accent)] has-[button:focus-visible]:outline-2 has-[button:focus-visible]:outline-offset-4 has-[button:focus-visible]:outline-sun"
       >
         <span className="relative block aspect-[4/3] w-full shrink-0 overflow-hidden">
           <ProjectCover project={p} index={index} />
@@ -88,10 +89,22 @@ const WorkCard: React.FC<{
         <LanguageBar languages={p.languages} className="h-1.5 shrink-0" />
 
         <span className="flex flex-1 flex-col bg-[linear-gradient(180deg,var(--color-panel),var(--color-deep))] p-6">
-          <span className="text-[1.6rem] font-extrabold leading-none tracking-[-0.03em] [font-variation-settings:'wdth'_112]">
+          <button
+            type="button"
+            onClick={onClick}
+            onFocus={onFocus}
+            className="text-left text-[1.6rem] font-extrabold leading-none tracking-[-0.03em] [font-variation-settings:'wdth'_112] after:absolute after:inset-0 focus-visible:outline-none"
+          >
             {p.title}
+          </button>
+          <span className="mt-2 flex items-center justify-between gap-3 text-xs text-mute">
+            Updated {relativeTime(p.updatedAt)}
+            <span className="flex items-center gap-1 font-semibold text-ink">
+              <Star size={12} className="fill-sun text-sun" aria-hidden />
+              {p.stars}
+              <span className="sr-only"> stars</span>
+            </span>
           </span>
-          <span className="mt-2 text-xs text-mute">Updated {relativeTime(p.updatedAt)}</span>
           <span className="mb-5 mt-4 line-clamp-2 t-small text-mute">{p.description}</span>
 
           <span className="mt-auto flex items-center justify-between gap-3 border-t border-line/70 pt-4">
@@ -104,19 +117,27 @@ const WorkCard: React.FC<{
                 </span>
               ))}
             </span>
-            <span className="flex shrink-0 items-center gap-3">
-              <span className="flex items-center gap-1 text-xs font-semibold">
-                <Star size={12} className="fill-sun text-sun" aria-hidden />
-                {p.stars}
-                <span className="sr-only"> stars</span>
-              </span>
+            <span className="flex shrink-0 items-center gap-2">
+              {p.homepageUrl && (
+                <a
+                  href={p.homepageUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onFocus={onFocus}
+                  aria-label={`Open the ${p.title} live site`}
+                  className="relative z-10 flex items-center gap-1.5 rounded-full border border-line bg-navy/70 py-1.5 pl-2.5 pr-3 text-xs font-semibold transition-colors hover:border-ink hover:bg-navy"
+                >
+                  <span aria-hidden className="size-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]" />
+                  Live site
+                </a>
+              )}
               <span aria-hidden className="grid size-8 place-items-center rounded-full bg-blue text-ink transition-transform duration-300 group-hover:rotate-45">
                 <ArrowUpRight size={15} />
               </span>
             </span>
           </span>
         </span>
-      </button>
+      </div>
     </motion.li>
   );
 };

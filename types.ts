@@ -18,12 +18,21 @@ export interface Project {
   stars: number;
   updatedAt: string;
   githubUrl: string;
+  /** Live deployment, never a GitHub link. */
   homepageUrl: string | null;
   topics: string[];
   /** Share of code by size, GitHub's colours, under 1% folded into Other. */
   languages: { name: string; color: string; percent: number }[];
   private: boolean;
   category: 'ai' | 'systems' | 'apps';
+  /** Commits on the default branch. */
+  commits: number;
+  forks: number;
+  createdAt: string;
+  pushedAt: string;
+  /** SPDX id, or null when GitHub can't identify one. */
+  license: string | null;
+  release: { tag: string; publishedAt: string } | null;
 }
 
 export interface SkillCategory {

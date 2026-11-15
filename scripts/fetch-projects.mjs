@@ -51,12 +51,17 @@ function fetchRepo({ repo, title, blurb }) {
     ])
   );
 
-  // Sizes and GitHub's own colours, for the language bar on the work index.
-  const LANGS = `query($owner:String!,$name:String!){repository(owner:$owner,name:$name){
+  // Language sizes for the bar, plus the activity the project modal shows:
+  // commits on the default branch, latest release, start date and last push.
+  const DETAIL = `query($owner:String!,$name:String!){repository(owner:$owner,name:$name){
+    forkCount createdAt pushedAt licenseInfo{spdxId}
+    defaultBranchRef{target{... on Commit{history{totalCount}}}}
+    latestRelease{tagName publishedAt}
     languages(first:10,orderBy:{field:SIZE,direction:DESC}){totalSize edges{size node{name color}}}}}`;
-  const { totalSize = 0, edges = [] } =
-    JSON.parse(gh(['api', 'graphql', '-f', `query=${LANGS}`, '-f', `owner=${OWNER}`, '-f', `name=${repo}`]))
-      .data.repository.languages ?? {};
+  const detail =
+    JSON.parse(gh(['api', 'graphql', '-f', `query=${DETAIL}`, '-f', `owner=${OWNER}`, '-f', `name=${repo}`]))
+      .data.repository;
+  const { totalSize = 0, edges = [] } = detail.languages ?? {};
   const languages = edges.map((e) => e.node.name);
 
   // Under 1% folds into "Other", the way GitHub's own bar reads at a glance.
@@ -86,10 +91,20 @@ function fetchRepo({ repo, title, blurb }) {
     stars: meta.stargazerCount ?? 0,
     updatedAt: meta.updatedAt,
     githubUrl: meta.url,
-    homepageUrl: meta.homepageUrl || null,
+    // Only a real deployment counts; a homepage pointing back at GitHub isn't one.
+    homepageUrl: meta.homepageUrl && !/github\.com/i.test(meta.homepageUrl) ? meta.homepageUrl : null,
     topics,
     languages: breakdown,
     private: meta.isPrivate ?? false,
+    commits: detail.defaultBranchRef?.target?.history?.totalCount ?? 0,
+    forks: detail.forkCount ?? 0,
+    createdAt: detail.createdAt,
+    pushedAt: detail.pushedAt,
+    // NOASSERTION means GitHub couldn't identify the licence; show nothing.
+    license: detail.licenseInfo && detail.licenseInfo.spdxId !== 'NOASSERTION' ? detail.licenseInfo.spdxId : null,
+    release: detail.latestRelease
+      ? { tag: detail.latestRelease.tagName, publishedAt: detail.latestRelease.publishedAt }
+      : null,
   };
   project.category = categorize(project);
   return project;
@@ -104,7 +119,8 @@ const projects = FEATURED.map((f) => {
 
 // self-check: every featured repo resolved with the fields the UI relies on
 for (const p of projects) {
-  if (!p.name || !p.description || !p.githubUrl || !Array.isArray(p.tech) || !Array.isArray(p.languages)) {
+  if (!p.name || !p.description || !p.githubUrl || !Array.isArray(p.tech) || !Array.isArray(p.languages)
+      || !Number.isInteger(p.commits) || !p.createdAt || !p.pushedAt) {
     throw new Error(`Incomplete project data for "${p.name || '?'}": ${JSON.stringify(p)}`);
   }
 }
