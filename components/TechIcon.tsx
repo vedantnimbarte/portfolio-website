@@ -21,6 +21,9 @@ const BRANDS: Record<string, SimpleIcon> = {
   mcp: siModelcontextprotocol, cuda: siNvidia, fastapi: siFastapi, 'claude-code': siClaude,
 };
 
+/** True when the name has a real brand mark, not a generic fallback glyph. */
+export const hasBrand = (name: string) => name.toLowerCase() in BRANDS;
+
 // No brand mark (AWS left Simple Icons over trademark) or not a brand at all.
 const fallback = (name: string): LucideIcon => {
   const l = name.toLowerCase();

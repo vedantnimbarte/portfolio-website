@@ -16,6 +16,9 @@ const screenshot = (name: string) =>
 // Order is fixed, so every project keeps its colour across grid and modal.
 const FIELDS = ['#146ef5', '#1f5c47', '#efe8dc', '#dfe4ee', '#ffd84a', '#dbe8ff'];
 
+/** The cover's field colour, so a card can echo it (hover glow). */
+export const coverColor = (index: number) => FIELDS[index % FIELDS.length];
+
 // What the project is decides what the art shows, so the grid is not ten
 // copies of one mock. Window wins over terminal: Arc is a desktop app that
 // happens to embed a terminal.
@@ -48,7 +51,7 @@ const Dots: React.FC = () => (
   </>
 );
 
-const frame = 'absolute inset-x-[8%] top-[17%] -bottom-6 overflow-hidden rounded-t-xl text-left';
+const frame = 'cover-tilt absolute inset-x-[8%] top-[17%] -bottom-6 overflow-hidden rounded-t-xl text-left';
 
 const Terminal: React.FC<{ p: Project; compact: boolean }> = ({ p, compact }) => {
   const [cmd, out] = BUILD[p.language ?? ''] ?? ['make', 'done'];
@@ -106,7 +109,7 @@ const Window: React.FC<{ p: Project; compact: boolean; dark: boolean }> = ({ p, 
 };
 
 const Chat: React.FC<{ p: Project; compact: boolean }> = ({ p, compact }) => (
-  <div className={`absolute inset-x-[10%] top-[56%] flex -translate-y-1/2 flex-col gap-2 text-left ${compact ? 'text-[10px]' : 'text-xs sm:text-[13px]'}`}>
+  <div className={`cover-tilt absolute inset-x-[10%] top-[30%] flex flex-col gap-2 text-left ${compact ? 'text-[10px]' : 'text-xs sm:text-[13px]'}`}>
     <p className="self-end rounded-2xl rounded-br-md bg-navy px-3.5 py-2 text-ink shadow-lg">
       What is {p.title} built with?
     </p>
@@ -137,12 +140,17 @@ export const ProjectCover: React.FC<{ project: Project; index: number; compact?:
       className="relative h-full w-full overflow-hidden"
       style={{ backgroundColor: FIELDS[index % FIELDS.length] }}
     >
+      {/* Light from the top left, a dot grid that fades toward it, and a
+          shadow pooling under the mockup: the field reads as a surface. */}
+      <span className="absolute inset-0 bg-[radial-gradient(120%_90%_at_0%_0%,rgba(255,255,255,0.28),transparent_55%)]" />
+      <span className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.35)_1px,transparent_1.2px)] [background-size:14px_14px] opacity-60 mix-blend-overlay [mask-image:linear-gradient(160deg,transparent_25%,#000)]" />
+      <span className="absolute inset-x-[12%] bottom-0 h-1/3 bg-[radial-gradient(50%_60%_at_50%_100%,rgba(0,0,0,0.35),transparent)]" />
       {shot ? (
         <img
           src={shot}
           alt=""
           loading="lazy"
-          className="absolute left-[8%] top-[17%] w-[84%] rounded-t-xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.45)]"
+          className="cover-tilt absolute left-[8%] top-[17%] w-[84%] rounded-t-xl shadow-[0_20px_40px_-12px_rgba(0,0,0,0.45)]"
         />
       ) : {
         terminal: <Terminal p={project} compact={compact} />,

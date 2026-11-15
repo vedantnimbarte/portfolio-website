@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
+import { ScrollProgress } from './components/motion';
 import { SiteProvider, useSite } from './hooks/useSite';
 import { ProjectModal } from './components/ProjectModal';
 import { ChatWidget, CommandPalette } from './components/Assistant';
 import { Hero, Nav } from './sections/Hero';
-import { FeaturedWorks, SideProjects } from './sections/Work';
+import { FeaturedWorks } from './sections/Work';
 import { Experience } from './sections/Experience';
-import { Process, Services } from './sections/Services';
-import { Bands, Contact, Numbers } from './sections/Closing';
+import { Services } from './sections/Services';
+import { Bands, Contact } from './sections/Closing';
 import projectsData from './data/projects.json';
 import type { Project } from './types';
 
@@ -37,16 +39,14 @@ const Page: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
+      <ScrollProgress />
       <Nav />
       <main>
         <Hero />
         <FeaturedWorks />
         <Experience />
         <Services />
-        <Process />
-        <SideProjects />
-        <Numbers />
         <Bands />
         <Contact />
       </main>
@@ -57,8 +57,9 @@ const Page: React.FC = () => {
         project={PROJECTS.find((p) => p.name === project) ?? null}
         isOpen={Boolean(project)}
         onClose={() => dispatch({ type: 'CLOSE_PROJECT' })}
+        onNavigate={(name) => dispatch({ type: 'OPEN_PROJECT', name })}
       />
-    </>
+    </MotionConfig>
   );
 };
 

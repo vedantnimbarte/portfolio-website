@@ -17,23 +17,42 @@
   --color-blue:  #146ef5;
   --color-sun:   #ffd84a;
   --color-plum:  #5b4bdb; /* only in the step icon gradient */
+
+  /* One vertical rhythm for every section, so the page breathes evenly. */
+  --spacing-section: clamp(6rem, 11vw, 10rem);
+}
+
+/* Page container: one width, one gutter, everywhere. */
+@utility shell {
+  margin-inline: auto;
+  max-width: 72rem;
+  padding-inline: 1.25rem;
+  @media (width >= 40rem) { padding-inline: 2rem; }
 }
 
 /* ---------------------------------------------------------------- type roles
    Minor-third scale. One family; weight and width carry the hierarchy. */
 
+/* Display roles run Archivo wide and heavy: the width axis is the voice. */
 @utility t-hero {
-  font-size: clamp(2.25rem, 5.2vw, 3.75rem);
-  line-height: 1.04;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-variation-settings: "wdth" 112;
+  font-size: clamp(2.6rem, 6.4vw, 5.25rem);
+  line-height: 0.98;
+  font-weight: 800;
+  letter-spacing: -0.035em;
 }
 
 @utility t-h2 {
-  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
-  line-height: 1.12;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 112;
+  font-size: clamp(2.1rem, 4.6vw, 3.75rem);
+  line-height: 1;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+@utility t-lead {
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.6;
 }
 
 @utility t-h3 {
@@ -81,9 +100,11 @@
   border-radius: 1.25rem;
 }
 
-/* Soft top-light, the way the reference cards catch light on their top edge. */
+/* Top-light plus a long, low drop: cards sit above the page, not on it. */
 @utility sheen {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 40px 80px -40px rgba(2, 6, 18, 0.85);
 }
 
 /* ------------------------------------------------------------------- marquee
@@ -124,6 +145,18 @@
   50% { transform: translateY(-6px); }
 }
 
+/* ------------------------------------------------------------ cover tilt
+   Project mockups lean back into the cover like a device on a desk, and
+   straighten toward the viewer when their card is hovered. */
+@utility cover-tilt {
+  transform: perspective(1000px) rotateX(18deg) rotateY(-14deg) rotateZ(3deg);
+  transform-origin: 50% 0;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  .group:hover & {
+    transform: perspective(1000px) rotateX(6deg) rotateY(-4deg) rotateZ(1deg) translateY(-3%);
+  }
+}
+
 @utility scrollbar-hide {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
@@ -136,6 +169,11 @@
   }
   body {
     background-color: var(--color-navy);
+    /* Two far-off light sources, fixed, so content scrolls through depth. */
+    background-image:
+      radial-gradient(60vw 50vh at 85% 10%, rgba(20, 110, 245, 0.08), transparent 70%),
+      radial-gradient(50vw 50vh at 5% 90%, rgba(91, 75, 219, 0.07), transparent 70%);
+    background-attachment: fixed;
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -151,7 +189,7 @@
   }
   /* Clears the sticky nav. */
   section[id] {
-    scroll-margin-top: 4.5rem;
+    scroll-margin-top: 5.5rem;
   }
 }
 
