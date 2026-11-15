@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { EXPERIENCE_DATA } from '../constants';
 import { Pill } from '../components/ui';
 import { goTo } from '../hooks/useSite';
+import { EASE, Rise, Words, useCinematic } from '../components/motion';
 
 /* ===========================================================================
    Experience as a career timeline. A ribbon across the top sizes each role by
@@ -82,22 +84,34 @@ const withFigures = (text: string) =>
     i % 2 ? <strong key={i} className="font-semibold text-ink">{part}</strong> : part
   );
 
-export const Experience: React.FC = () => (
-  <section id="experience" aria-labelledby="exp-title" className="mx-auto max-w-5xl px-5 py-20">
-    <h2 id="exp-title" className="t-h2 text-center">Where I&apos;ve worked</h2>
-    <p className="mt-3 text-center t-body text-mute">
-      {duration(CAREER)} across {ROLES.length} roles
-    </p>
+export const Experience: React.FC = () => {
+  const ok = useCinematic();
+  const spine = useRef<HTMLOListElement>(null);
+  const { scrollYProgress } = useScroll({ target: spine, offset: ['start 65%', 'end 65%'] });
+  const fill = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
+
+  return (
+  <section id="experience" aria-labelledby="exp-title" className="shell py-section">
+    <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+      <Words id="exp-title" text="Where I’ve worked" className="t-h2" />
+      <p className="t-lead text-mute">
+        {duration(CAREER)} across {ROLES.length} roles
+      </p>
+    </div>
 
     {/* Career ribbon */}
-    <div className="mt-12">
+    <div className="mt-16">
       <div className="relative h-12 rounded-full bg-panel ring-1 ring-line">
         {ROLES.map((r, i) => (
-          <a
+          <motion.a
             key={r.id}
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, amount: 0.8 }}
+            transition={{ duration: 0.9, ease: EASE, delay: (ROLES.length - 1 - i) * 0.18 }}
             href={`#${r.id}`}
             title={`${r.company}, ${r.period}`}
-            className="absolute inset-y-1.5 flex items-center overflow-hidden rounded-full px-3 transition-[filter] hover:brightness-110"
+            className="absolute inset-y-1.5 flex origin-left items-center overflow-hidden rounded-full px-3 transition-[filter] hover:brightness-110"
             style={{
               left: `calc(${pct(r.start)}% + 3px)`,
               width: `calc(${pct(ribbonEnd(i)) - pct(r.start)}% - 6px)`,
@@ -108,7 +122,7 @@ export const Experience: React.FC = () => (
             <span className="sr-only sm:not-sr-only sm:min-w-0">
               <span className="block truncate text-xs font-bold">{r.company}</span>
             </span>
-          </a>
+          </motion.a>
         ))}
       </div>
       <div aria-hidden className="relative mt-2 h-5 text-[11px] text-mute">
@@ -121,9 +135,18 @@ export const Experience: React.FC = () => (
     </div>
 
     {/* Timeline */}
-    <ol className="relative mt-14 space-y-8 before:absolute before:bottom-3 before:left-[7px] before:top-3 before:w-px before:bg-line lg:before:left-[239px]">
+    <ol ref={spine} className="relative mt-20 space-y-12 before:absolute before:bottom-3 before:left-[7px] before:top-3 before:w-px before:bg-line lg:before:left-[239px]">
+      {/* The spine fills in the current role's yellow as you read down it. */}
+      {ok && (
+        <motion.span
+          aria-hidden
+          style={{ scaleY: fill }}
+          className="absolute bottom-3 left-[7px] top-3 w-px origin-top bg-sun lg:left-[239px]"
+        />
+      )}
       {ROLES.map((r) => (
-        <li
+        <Rise
+          as="li"
           key={r.id}
           id={r.id}
           className="relative scroll-mt-24 pl-9 lg:grid lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20 lg:pl-0"
@@ -143,7 +166,7 @@ export const Experience: React.FC = () => (
             </p>
           </div>
 
-          <article className="card sheen p-6">
+          <article className="card sheen p-6 sm:p-8">
             <header className="flex items-start gap-3">
               <span
                 aria-hidden
@@ -170,14 +193,15 @@ export const Experience: React.FC = () => (
               ))}
             </ul>
           </article>
-        </li>
+        </Rise>
       ))}
     </ol>
 
-    <div className="mt-12 text-center">
+    <div className="mt-16 text-center">
       <Pill href="#contact" onClick={(e) => { e.preventDefault(); goTo('contact'); }}>
         Contact me
       </Pill>
     </div>
   </section>
-);
+  );
+};

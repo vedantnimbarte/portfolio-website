@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
+import { ScrollProgress } from './components/motion';
 import { SiteProvider, useSite } from './hooks/useSite';
 import { ProjectModal } from './components/ProjectModal';
 import { ChatWidget, CommandPalette } from './components/Assistant';
@@ -37,7 +39,8 @@ const Page: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
+      <ScrollProgress />
       <Nav />
       <main>
         <Hero />
@@ -58,7 +61,7 @@ const Page: React.FC = () => {
         isOpen={Boolean(project)}
         onClose={() => dispatch({ type: 'CLOSE_PROJECT' })}
       />
-    </>
+    </MotionConfig>
   );
 };
 
